@@ -13,3 +13,18 @@ nginx config can be quite complex:
 * must take care of pitfalls / good practices: http://wiki.nginx.org/Pitfalls
 * must "include [...]/mime.types" otherwise css not taken into account
 
+
+## About JQuery like server transforms
+
+for nodejs: 
+
+* http://blog.nodejitsu.com/jsdom-jquery-in-5-lines-on-nodejs/
+
+for scala: 
+
+* http://scalate.github.io/scalate/documentation/scuery.html
+
+
+## About Swagger
+
+http://localhost:9000/#/edit
