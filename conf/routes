@@ -1,0 +1,20 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Swagger - Root Resources Listing
+GET     /api-docs               controllers.ApiHelpController.getResources
+
+# OPTIONS to support hosting UI off domain
+
+#OPTIONS /*wholepath             @controllers.PetApiController.getOptions(wholepath)
+
+GET     /api-docs/admin         controllers.ApiHelpController.getResource(path = "/admin")
+GET     /admin/health           controllers.HealthController.getHealth
+GET     /admin/ping             controllers.HealthController.ping
+
+
+GET     /api-docs/website       controllers.ApiHelpController.getResource(path = "/website")
+GET     /websites                controllers.WebsiteApiController.websites
+POST    /website                 controllers.WebsiteApiController.addWebsite
+
