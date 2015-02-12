@@ -16,21 +16,9 @@
 
 package models
 
-import com.wordnik.swagger.annotations._
 
-import scala.annotation.meta.field
+case class Website(id: Int, name: String,url: String)
 
-@ApiModel("Website")
-case class Website(
-                @(ApiModelProperty @field)(position=1, value="logical_name")logicalName: String,
-                @(ApiModelProperty @field)(position=3)url: String
-                ) {
-  def this() = this("", "")
-  
-  def create : Option[Unit] = {
-    
-    None
-  }
-  
+object WebsiteDb extends DbImpl[Website] {
+  def createDefaultList: List[Website] = List()
 }
-
