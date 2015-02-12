@@ -26,19 +26,22 @@ object WebsiteApiController extends Controller {
       Ok(Json.toJson(WebsiteDb.all))
   }
 
-  def create() = Action {
-    implicit request =>
-      val res = (for {
-        v <- request.body.asJson
-        r = Json.fromJson[Website](v)
-        result : JsValue = r.fold (
-          err => Error(err).toJson,
-          good => Json.toJson(WebsiteDb.add(good))
-        )
-      } yield result) getOrElse JsString("Invalid Json Error")
-      Ok(res)
-  
+  def toJsResult[T, U](json: Option[JsValue], f: T => U)(implicit ev: Reads[T], ev2: Writes[U]) = (for {
+    v <- json
+    r = Json.fromJson[T](v)(ev).fold(
+      err => Error(err).toJson,
+      good => Json.toJson(f(good))
+    )
+  } yield r) getOrElse JsString("Invalid Json Error")
+
+  def JsonParserAction[T, U](f: T => U): Action[AnyContent] = {
+    Action { implicit request =>
+        Ok(toJsResult(request.body.asJson, WebsiteDb.add _))
+    }
   }
+  
+
+  def create() = JsonParserAction(WebsiteDb.add)
 
   def delete(id:Int) = Action {
     implicit request =>
