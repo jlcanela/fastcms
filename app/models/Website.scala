@@ -16,12 +16,54 @@
 
 package models
 
+import java.io.{FileNotFoundException, FileInputStream, File}
+import java.net.URL
+
+import org.zeroturnaround.zip.ZipUtil
 import play.Play
 import play.api.libs.json.Json
 import play.api.{Logger, Configuration}
 
 
-case class Website(id: Int, name: String,url: String)
+import scalaz.syntax.validation._
+import scalaz.Validation
+
+case class Website(id: Int, name: String,url: String) {
+
+  /**
+   * fetch the file and unzip it to path
+   * @param path
+   */
+  def fetchContent(path: String) : Validation[String, Unit]= try {
+    val target = new File(path)
+    val asUrl = new URL(url)
+    val stream = asUrl.getProtocol match {
+      case "file" => new FileInputStream(asUrl.getFile)
+      case _ => new URL(url).openStream()
+    }
+
+    ZipUtil.unpack(stream, target)
+    if (target.exists()) {
+      ().success[String]
+    } else {
+     s"$url (invalid zip file - folder '$path' not created".failure[Unit]
+    }
+    
+  } catch {
+    case ex: FileNotFoundException => ex.getMessage.failure[Unit]
+  }
+
+  def checkContent(path: String) : Validation[String, Unit]= {
+    val indexPath = new File(new File(path), "index.html")
+    if (indexPath.exists()) {
+      ().success[String]
+    } else {
+      s"index.html file not found ($indexPath)".failure[Unit]
+    }
+       
+  }
+
+}
 
 object WebsiteDb extends DbImpl[Website] {
 

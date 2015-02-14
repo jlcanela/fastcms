@@ -23,7 +23,6 @@ object WebsiteApiController extends Controller {
   
   def list() = Action {
     implicit request =>
-      println("the list is here")
       Ok(Json.toJson(WebsiteDb.all))
   }
 
