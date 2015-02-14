@@ -13,10 +13,15 @@ import scala.concurrent.Future
 
 trait WebsiteHelper {
   implicit val app: FakeApplication
-  def websites_GET = WS.url(s"http://localhost:3333/websites").get
-  def websites_POST(body: String) = WS.url(s"http://localhost:3333/websites").withHeaders("Content-Type" -> "application/json").post(body)
-  def websites_PUT(id: Int, body: String) = WS.url(s"http://localhost:3333/websites/$id").withHeaders("Content-Type" -> "application/json").put(body)
-  def websites_DELETE(id: Int) = WS.url(s"http://localhost:3333/websites/$id").delete()
+  
+  val DEFAULT_PORT = 3333
+  val BASE_URL = s"http://localhost:$DEFAULT_PORT/websites"
+  def computeUrl(id:Int) = s"$BASE_URL/$id"
+  
+  def websites_GET = WS.url(BASE_URL).get
+  def websites_POST(body: String) = WS.url(BASE_URL).withHeaders("Content-Type" -> "application/json").post(body)
+  def websites_PUT(id: Int, body: String) = WS.url(computeUrl(id)).withHeaders("Content-Type" -> "application/json").put(body)
+  def websites_DELETE(id: Int) = WS.url(computeUrl(id)).delete()
   
 }
 
