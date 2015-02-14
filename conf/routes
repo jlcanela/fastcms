@@ -3,20 +3,20 @@
 # ~~~~
 
 # Swagger - Root Resources Listing
-GET     /api-docs               controllers.ApiHelpController.getResources
+# GET     /api-docs               controllers.ApiHelpController.getResources
 
 # OPTIONS to support hosting UI off domain
 
 #OPTIONS /*wholepath             @controllers.PetApiController.getOptions(wholepath)
 
-GET     /api-docs/admin         controllers.ApiHelpController.getResource(path = "/admin")
-GET     /admin/health           controllers.HealthController.getHealth
-GET     /admin/ping             controllers.HealthController.ping
+# GET     /api-docs/admin         controllers.ApiHelpController.getResource(path = "/admin")
+# GET     /admin/health           controllers.HealthController.getHealth
+# GET     /admin/ping             controllers.HealthController.ping
 
 
-GET     /api-docs/website       controllers.ApiHelpController.getResource(path = "/website")
+# GET     /api-docs/website       controllers.ApiHelpController.getResource(path = "/website")
 GET     /websites               controllers.WebsiteApiController.list
 POST    /websites               controllers.WebsiteApiController.create
 DELETE  /websites/:id           controllers.WebsiteApiController.delete(id:Int)
-# UPDATE  /websites/:id           controllers.WebsiteApiController.update(id:Int)
+PUT  /websites/:id           controllers.WebsiteApiController.update(id:Int)
 

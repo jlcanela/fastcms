@@ -1,11 +1,10 @@
 package controllers
 
-import api._
 import models.{Website, WebsiteDb}
-import play.api.libs.json._
 
+import play.Play
+import play.api.libs.json._
 import play.api.mvc._
-import play.api.mvc.Result
 
 case class Error(err: Seq[(play.api.libs.json.JsPath, Seq[play.api.data.validation.ValidationError])]) {
   def toJsonErr(err: (play.api.libs.json.JsPath, Seq[play.api.data.validation.ValidationError])) = {
@@ -19,10 +18,12 @@ case class Error(err: Seq[(play.api.libs.json.JsPath, Seq[play.api.data.validati
 
 object WebsiteApiController extends Controller {
 
+
   implicit val websiteFormat = Json.format[Website]
   
   def list() = Action {
     implicit request =>
+      println("the list is here")
       Ok(Json.toJson(WebsiteDb.all))
   }
 
@@ -32,27 +33,35 @@ object WebsiteApiController extends Controller {
       err => Error(err).toJson,
       good => Json.toJson(f(good))
     )
-  } yield r) getOrElse JsString("Invalid Json Error")
+  } yield r) getOrElse JsString(s"Invalid Json Error: $json")
 
-  def JsonParserAction[T, U](f: T => U): Action[AnyContent] = {
-    Action { implicit request =>
-        Ok(toJsResult(request.body.asJson, WebsiteDb.add _))
-    }
+  implicit val unitSer = new Writes[Unit] {
+    def writes(u: Unit) = JsObject(Seq("success" -> JsBoolean(true)))
   }
   
+  def JsonParserAction[T, U](code: Int, f: T => U)(implicit rds: Reads[T], wrs: Writes[U]): Action[JsValue] = {
+    Action(BodyParsers.parse.json) { request =>
 
-  def create() = JsonParserAction(WebsiteDb.add)
+      val obj = request.body.validate[T]
+      obj.fold(
+        errors => {
+          BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+        },
+        o =>
+          Status(code)(Json.toJson(f(o)))
+          //Ok(Json.obj("status" ->"OK", "message" -> Json.toJson(f(o)) ))
+      )
+    }
+  }
+
+  def create() = JsonParserAction(CREATED, WebsiteDb.add)
 
   def delete(id:Int) = Action {
     implicit request =>
       WebsiteDb.delete(id)
-      Ok
+      Ok(JsObject(Seq("success" -> JsBoolean(true))))
   }
 
-  def update(id:Int) = Action {
-    implicit request =>
-      WebsiteDb.update(null)
-      Ok
-  }
+  def update(id:Int) = JsonParserAction(ACCEPTED, WebsiteDb.update(id))
 
 }

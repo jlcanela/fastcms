@@ -19,9 +19,10 @@ trait DbImpl[T <: DbImpl.HaveIdAndName with Product] {
 
   def find(id: Int) = list.filter(_.id == id).headOption
 
-  def update(t: T) = {
+  def update(id: Int)(t: T) = {
     def replace(updated: T) = (old: T) => if (updated.id == old.id) updated else old
     list = list.map(replace(t))
+    t
   }
 
   def delete(id: Int) = {

@@ -1,5 +1,5 @@
 package security
-
+/*
 import com.wordnik.swagger.model._
 import com.wordnik.swagger.core.filter.SwaggerSpecFilter
 import play.api.Logger
@@ -41,4 +41,4 @@ class AuthorisationFilter extends SwaggerSpecFilter {
       case _ => false
     }
   }
-}
+}*/

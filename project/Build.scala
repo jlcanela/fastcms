@@ -9,9 +9,10 @@ object ApplicationBuild extends Build {
   val appVersion = "1.0.0"
 
   val appDependencies: Seq[sbt.ModuleID] = Seq(
-    "com.wordnik" %% "swagger-play2" % "1.3.12",
-    "com.wordnik" %% "swagger-play2-utils" % "1.3.12",
-    "org.zeroturnaround" % "zt-zip" % "1.7"
+    //"com.wordnik" %% "swagger-play2" % "1.3.12",
+   // "com.wordnik" %% "swagger-play2-utils" % "1.3.12",
+    "org.zeroturnaround" % "zt-zip" % "1.7",
+    "com.typesafe.play" %% "play-ws" % "2.4.0-M2"
     //"org.apache.commons" % "commons-compress" % "1.5",
   )
 
@@ -24,5 +25,6 @@ object ApplicationBuild extends Build {
       "sonatype-snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
       "sonatype-releases" at "https://oss.sonatype.org/content/repositories/releases",
       "java-net" at "http://download.java.net/maven/2",
+      "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
       "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"))
 }

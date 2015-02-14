@@ -16,9 +16,23 @@
 
 package models
 
+import play.Play
+import play.api.libs.json.Json
+import play.api.{Logger, Configuration}
+
 
 case class Website(id: Int, name: String,url: String)
 
 object WebsiteDb extends DbImpl[Website] {
-  def createDefaultList: List[Website] = List()
+
+  def config = Play.application().configuration().getString("db.website")
+
+  def createDefaultList: List[Website] = {
+    implicit val websiteFormat = Json.format[Website]
+    Json.fromJson[List[Website]](Json.parse(config)).fold(
+      _ => List(),
+      list => list
+    )
+  }
+
 }

@@ -5,7 +5,7 @@ import com.wordnik.swagger.model._
 
 
 object Global extends GlobalSettings {
-  val info = ApiInfo(
+/*  val info = ApiInfo(
     title = "Swagger Sample App",
     description = """This is a sample server Petstore server.  You can find out more about Swagger 
     at <a href="http://swagger.io">http://swagger.io</a> or on irc.freenode.net, #swagger.  For this sample,
@@ -34,5 +34,5 @@ object Global extends GlobalSettings {
     )
   ))
   ConfigFactory.config.authorizations = List(oauth)
-  ConfigFactory.config.info = Some(info)
+  ConfigFactory.config.info = Some(info)*/
 }
