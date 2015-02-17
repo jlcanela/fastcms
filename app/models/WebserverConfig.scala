@@ -12,7 +12,7 @@ case class WebserverConfig(defaultPort: Int, dataPath: File, logPath: File, temp
  s"""    server {
         listen ${website.port};
         error_log ${website.log(logPath).getAbsolutePath}/error_log;
-        root ${website.www(dataPath).getAbsolutePath}/;
+        root ${website.www(dataPath).getCanonicalFile.getAbsolutePath}/;
         location / {
         }
     }
@@ -38,5 +38,6 @@ http {
 
 ${websites.map {generateServer} mkString "\n" }
 }"""
+  def prepareLogs = websites.map { _.log(logPath).getAbsolutePath} map { x => new File(x) } foreach { f => f.mkdirs() }
 
 }

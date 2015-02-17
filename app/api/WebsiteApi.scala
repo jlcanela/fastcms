@@ -25,22 +25,25 @@ object WebsiteApi {
 
     for {
       fetched <- website.fetchContent(path)
-      checked <- website.checkContent(path)
-      _ = WebsiteDb.add(website)
+      path <- website.checkContent(path)
+      updated = website.copy(path = path)
+      _ = WebsiteDb.add(updated)
       _ = regenerate(nginxConfig)
-    } yield website
+    } yield updated
     
   }
   
   def regenerate(configFile: File) = {
-    val content = WebserverConfig(
+   val wsc = WebserverConfig(
       defaultPort = 9001, 
       dataPath = new File(config.getString("nginx.data")), 
       logPath = new File(config.getString("nginx.log")),
       tempPath = new File(config.getString("nginx.temp")),
       nginxEtcPath = new File(config.getString("nginx.etc")),
       websites = WebsiteDb.all
-    ).generate()
+    )
+    val content = wsc.generate()
+    wsc.prepareLogs
 
     val writer = new PrintWriter(configFile)
     writer.write(content)

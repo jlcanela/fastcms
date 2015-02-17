@@ -31,7 +31,10 @@ import scalaz.\/
 case class Website(id: Int, name: String, url: String, port: Int, path: String) {
 
   def log(rootLogPath: File) = new File(rootLogPath, s"$name")
-  def www(rootDataPath: File) = new File(rootDataPath, s"www/$name")
+  def www(rootDataPath: File) = path match {
+    case "" => new File(rootDataPath, s"www/$name")
+    case p => new File(new File(rootDataPath, ".."), p)
+  } 
 
   /**
    * fetch the file and unzip it to path
@@ -59,8 +62,6 @@ case class Website(id: Int, name: String, url: String, port: Int, path: String) 
     
     val filter = new FilenameFilter {
       override def accept(dir: File, name: String): Boolean = {
-        println("dir:" + dir)
-        println("name:" + name)
         name == "index.html"
       }
     }
@@ -73,7 +74,6 @@ case class Website(id: Int, name: String, url: String, port: Int, path: String) 
     def mainPath(path: File) : Option[String] = nullIsEmpty(path.list(filter)).headOption
     def subPath(path: File) : Option[String] =  nullIsEmpty(path.listFiles()).flatMap(x => nullIsEmpty(x.list(filter)).headOption.map(x + File.separator + _)).headOption
     val index: Option[String] = mainPath(path) orElse subPath(path)
-
     index.map(f => \/.right(f.replace("index.html", ""))) getOrElse \/.left(s"index.html file not found ($path)")
   }
 

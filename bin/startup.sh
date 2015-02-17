@@ -1,2 +1,2 @@
 #!/bin/bash
-nginx -c /Users/jlcanela/dev/axags/mycms/etc/nginx.conf
+nginx -c /Users/jlcanela/dev/axags/fastcms/etc/nginx.conf
