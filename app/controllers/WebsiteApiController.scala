@@ -1,10 +1,13 @@
 package controllers
 
+import api.WebsiteApi
 import models.{Website, WebsiteDb}
 
 import play.Play
 import play.api.libs.json._
 import play.api.mvc._
+
+import scalaz.\/
 
 case class Error(err: Seq[(play.api.libs.json.JsPath, Seq[play.api.data.validation.ValidationError])]) {
   def toJsonErr(err: (play.api.libs.json.JsPath, Seq[play.api.data.validation.ValidationError])) = {
@@ -38,6 +41,18 @@ object WebsiteApiController extends Controller {
     def writes(u: Unit) = JsObject(Seq("success" -> JsBoolean(true)))
   }
   
+  implicit val scalazSerializer = new Writes[\/[String, Website]] {
+    def writes(w: \/[String, Website]) = {
+      w.fold( 
+        err => JsObject(Seq("success" -> JsBoolean(false), "error" -> JsString(err))) ,
+        website => Json.toJson(website)
+      )
+      
+    }
+    
+    
+  }
+  
   def JsonParserAction[T, U](code: Int, f: T => U)(implicit rds: Reads[T], wrs: Writes[U]): Action[JsValue] = {
     Action(BodyParsers.parse.json) { request =>
 
@@ -53,7 +68,7 @@ object WebsiteApiController extends Controller {
     }
   }
 
-  def create() = JsonParserAction(CREATED, WebsiteDb.add)
+  def create() = JsonParserAction(CREATED, WebsiteApi.create)
 
   def delete(id:Int) = Action {
     implicit request =>

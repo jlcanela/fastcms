@@ -62,7 +62,7 @@ class FunctionalSpec extends Specification with WebsiteFixture with TestServerHe
         websites_POST("invalid_json") must beBadRequest(msg = "create_invalid_json", code = BAD_REQUEST)
       }
       "create_uncompliant_json fails" in new CustomServer(DB_WEBSITES) {
-        websites_POST("[]") must haveResult(msg = "create_valid", code = BAD_REQUEST, json = Json.parse("""{"status":"KO","message":{"obj.id":[{"msg":"error.path.missing","args":[]}],"obj.name":[{"msg":"error.path.missing","args":[]}],"obj.url":[{"msg":"error.path.missing","args":[]}]}}"""))
+        websites_POST("[]") must haveResult(msg = "create_valid", code = BAD_REQUEST, json = Json.parse("""{"status":"KO","message":{"obj.url":[{"msg":"error.path.missing","args":[]}],"obj.port":[{"msg":"error.path.missing","args":[]}],"obj.path":[{"msg":"error.path.missing","args":[]}],"obj.id":[{"msg":"error.path.missing","args":[]}],"obj.name":[{"msg":"error.path.missing","args":[]}]}}"""))
       }
 
     }
@@ -78,7 +78,7 @@ class FunctionalSpec extends Specification with WebsiteFixture with TestServerHe
         websites_PUT(0, "invalid_json") must beBadRequest(msg = "update_invalid_json", code = BAD_REQUEST)
       }
       "create_uncompliant_json fails" in new CustomServer(DB_WEBSITES) {
-        websites_PUT(0, "[]") must haveResult(msg = "update_valid", code = BAD_REQUEST, json = Json.parse("""{"status":"KO","message":{"obj.id":[{"msg":"error.path.missing","args":[]}],"obj.name":[{"msg":"error.path.missing","args":[]}],"obj.url":[{"msg":"error.path.missing","args":[]}]}}"""))
+        websites_PUT(0, "[]") must haveResult(msg = "update_valid", code = BAD_REQUEST, json = Json.parse("""{"status":"KO","message":{"obj.url":[{"msg":"error.path.missing","args":[]}],"obj.port":[{"msg":"error.path.missing","args":[]}],"obj.path":[{"msg":"error.path.missing","args":[]}],"obj.id":[{"msg":"error.path.missing","args":[]}],"obj.name":[{"msg":"error.path.missing","args":[]}]}}"""))
       }
     }
 

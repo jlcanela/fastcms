@@ -16,8 +16,9 @@
 
 package models
 
-import java.io.{FileNotFoundException, FileInputStream, File}
+import java.io.{FilenameFilter, FileNotFoundException, FileInputStream, File}
 import java.net.URL
+import java.nio.file.{PathMatcher, SimpleFileVisitor, Path, FileSystems}
 
 import org.zeroturnaround.zip.ZipUtil
 import play.Play
@@ -25,17 +26,18 @@ import play.api.libs.json.Json
 import play.api.{Logger, Configuration}
 
 
-import scalaz.syntax.validation._
-import scalaz.Validation
+import scalaz.\/
 
-case class Website(id: Int, name: String,url: String) {
+case class Website(id: Int, name: String, url: String, port: Int, path: String) {
+
+  def log(rootLogPath: File) = new File(rootLogPath, s"$name")
+  def www(rootDataPath: File) = new File(rootDataPath, s"www/$name")
 
   /**
    * fetch the file and unzip it to path
    * @param path
    */
-  def fetchContent(path: String) : Validation[String, Unit]= try {
-    val target = new File(path)
+  def fetchContent(target: File) : \/[String, Unit]= try {
     val asUrl = new URL(url)
     val stream = asUrl.getProtocol match {
       case "file" => new FileInputStream(asUrl.getFile)
@@ -44,23 +46,35 @@ case class Website(id: Int, name: String,url: String) {
 
     ZipUtil.unpack(stream, target)
     if (target.exists()) {
-      ().success[String]
+      \/.right(())
     } else {
-     s"$url (invalid zip file - folder '$path' not created".failure[Unit]
+      \/.left(s"$url (invalid zip file - folder '$target' not created")
     }
     
   } catch {
-    case ex: FileNotFoundException => ex.getMessage.failure[Unit]
+    case ex: FileNotFoundException => \/.left(ex.getMessage)
   }
 
-  def checkContent(path: String) : Validation[String, Unit]= {
-    val indexPath = new File(new File(path), "index.html")
-    if (indexPath.exists()) {
-      ().success[String]
-    } else {
-      s"index.html file not found ($indexPath)".failure[Unit]
+  def checkContent(path: File) : \/[String, String]= {
+    
+    val filter = new FilenameFilter {
+      override def accept(dir: File, name: String): Boolean = {
+        println("dir:" + dir)
+        println("name:" + name)
+        name == "index.html"
+      }
     }
-       
+    
+    def nullIsEmpty[T](arr: Array[T]) : List[T] = arr match {
+      case null => List[T]()
+      case arr => arr.toList
+    }
+    
+    def mainPath(path: File) : Option[String] = nullIsEmpty(path.list(filter)).headOption
+    def subPath(path: File) : Option[String] =  nullIsEmpty(path.listFiles()).flatMap(x => nullIsEmpty(x.list(filter)).headOption.map(x + File.separator + _)).headOption
+    val index: Option[String] = mainPath(path) orElse subPath(path)
+
+    index.map(f => \/.right(f.replace("index.html", ""))) getOrElse \/.left(s"index.html file not found ($path)")
   }
 
 }
@@ -78,3 +92,4 @@ object WebsiteDb extends DbImpl[Website] {
   }
 
 }
+
