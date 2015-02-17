@@ -48,6 +48,9 @@ object WebsiteApi {
     val writer = new PrintWriter(configFile)
     writer.write(content)
     writer.close()
+    
+    import scala.sys.process._
+    "./bin/reload.sh" !
 
   }
   
