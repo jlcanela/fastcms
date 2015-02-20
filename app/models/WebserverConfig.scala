@@ -35,7 +35,7 @@ http {
     fastcgi_temp_path ${tempPath.getAbsolutePath}/fastcgi_temp 1 2;
     uwsgi_temp_path ${tempPath.getAbsolutePath}/uwsgi_temp;
     scgi_temp_path ${tempPath.getAbsolutePath}/scgi_temp;
-
+    
 ${websites.map {generateServer} mkString "\n" }
 }"""
   def prepareLogs = websites.map { _.log(logPath).getAbsolutePath} map { x => new File(x) } foreach { f => f.mkdirs() }

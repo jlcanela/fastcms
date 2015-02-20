@@ -85,7 +85,7 @@ object WebsiteDb extends DbImpl[Website] {
 
   def createDefaultList: List[Website] = {
     implicit val websiteFormat = Json.format[Website]
-    Json.fromJson[List[Website]](Json.parse(config)).fold(
+    Website(0, "admin", "", 10000, "admin") :: Json.fromJson[List[Website]](Json.parse(config)).fold(
       _ => List(),
       list => list
     )
