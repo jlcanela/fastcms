@@ -17,7 +17,7 @@ Integrate your content in minutes.
 ## Product
 
 * provide database content source;
-* provide prismic.io content source;
+* provide json content source;
 * integrate (simple) content quickly without changing html provided by external web agency;
 * provide file repository for pdf files and pdf file seo url.
 
