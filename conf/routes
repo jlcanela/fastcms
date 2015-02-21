@@ -18,5 +18,6 @@
 GET     /websites               controllers.WebsiteApiController.list
 POST    /websites               controllers.WebsiteApiController.create
 DELETE  /websites/:id           controllers.WebsiteApiController.delete(id:Int)
-PUT  /websites/:id           controllers.WebsiteApiController.update(id:Int)
+PUT  /websites/:id              controllers.WebsiteApiController.update(id:Int)
 
+OPTIONS    /websites             controllers.WebsiteApiController.options

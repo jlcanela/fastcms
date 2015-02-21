@@ -26,7 +26,7 @@ object WebsiteApiController extends Controller {
   
   def list() = Action {
     implicit request =>
-      Ok(Json.toJson(WebsiteDb.all))
+      Ok(Json.toJson(WebsiteDb.all)).withHeaders(("Access-Control-Allow-Origin", "*"));
   }
 
   def toJsResult[T, U](json: Option[JsValue], f: T => U)(implicit ev: Reads[T], ev2: Writes[U]) = (for {
@@ -59,16 +59,26 @@ object WebsiteApiController extends Controller {
       val obj = request.body.validate[T]
       obj.fold(
         errors => {
-          BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+          BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors))).withHeaders(("Access-Control-Allow-Origin", "*"))
         },
         o =>
-          Status(code)(Json.toJson(f(o)))
+          Status(code)(Json.toJson(f(o))).withHeaders(("Access-Control-Allow-Origin", "*"))
           //Ok(Json.obj("status" ->"OK", "message" -> Json.toJson(f(o)) ))
       )
     }
   }
 
   def create() = JsonParserAction(CREATED, WebsiteApi.create)
+
+  def options = Action {
+    Ok("").withHeaders(
+      "Access-Control-Allow-Origin" -> "*",
+      "Access-Control-Allow-Methods" -> "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers" -> "Accept, Origin, Content-type, X-Json, X-Prototype-Version, X-Requested-With",
+      "Access-Control-Allow-Credentials" -> "true",
+      "Access-Control-Max-Age" -> (60 * 60 * 24).toString
+    )
+  }
 
   def delete(id:Int) = Action {
     implicit request =>
