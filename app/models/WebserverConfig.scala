@@ -8,6 +8,8 @@ import java.io.File
 // tempPath = data/temp
 case class WebserverConfig(defaultPort: Int, dataPath: File, logPath: File, tempPath: File, nginxEtcPath: File, websites: List[Website]) {
 
+  def pathsToCreate = dataPath :: logPath :: tempPath :: Nil ::: logPaths ::: tempPaths
+  
   def generateServer(website: Website) =
  s"""    server {
         listen ${website.port};
@@ -38,6 +40,7 @@ http {
     
 ${websites.map {generateServer} mkString "\n" }
 }"""
-  def prepareLogs = websites.map { _.log(logPath).getAbsolutePath} map { x => new File(x) } foreach { f => f.mkdirs() }
+  def logPaths = websites.map { _.log(logPath).getAbsolutePath} map { x => new File(x) }
 
+  def tempPaths = ("client_body_temp" :: "proxy_temp" :: "fastcgi_temp" :: "uwsgi_temp" :: "scgi_temp" :: Nil) map { new File(tempPath, _)}
 }

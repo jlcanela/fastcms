@@ -36,9 +36,10 @@ object WebsiteApi {
   
   def regenerate {
     val nginxConfig = new File(config.getString("nginx.local_etc"))
+    
     regenerate(nginxConfig)
   }
-  
+
   def regenerate(configFile: File) {
    val wsc = WebserverConfig(
       defaultPort = 9001, 
@@ -49,12 +50,15 @@ object WebsiteApi {
       websites = WebsiteDb.all
     )
     val content = wsc.generate()
-    wsc.prepareLogs
+
+    (configFile.getParentFile :: wsc.pathsToCreate) foreach { folder => if (!folder.exists()) folder.mkdirs()}
+    
+    val folder = configFile.getParentFile
+    if (!folder.exists()) folder.mkdirs()
 
     val writer = new PrintWriter(configFile)
     writer.write(content)
     writer.close()
-    
 
   }
 
