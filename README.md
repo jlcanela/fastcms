@@ -26,13 +26,18 @@ This version is compatible with Play 2.4.0-M2
 
 ### To run
 
-You can run the Fast CMS app as such:
+Let's run the application
 
-````
-sbt run
-````
+* clone git repo: `git clone git@github.com:jlcanela/fastcms.git`
 
+* change folder: `cd fastcms`
 
-The application will listen on port 9000 and respond to `http://localhost:9000/websites`. 
-To trigger the automatic startup of nginx you can `curl http://localhost:9000/websites` from another console.
+* run application: `sbt run`
 
+* trigger nginx startup: `curl http://localhost:9000/websites`.
+
+* go to admin page at `http://localhost:10000/`
+
+### Configuration
+
+If default ports 10000 is not available, please change admin.port in conf/application.conf.
