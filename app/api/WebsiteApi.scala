@@ -21,19 +21,25 @@ object WebsiteApi {
     Logger.info(s"adding $website")
 
     val path = website.www(new File(config.getString("nginx.data")))// + File.separator + website.name
-    val nginxConfig = new File(config.getString("nginx.local_etc"))
+
 
     for {
       fetched <- website.fetchContent(path)
       path <- website.checkContent(path)
       updated = website.copy(path = path)
       _ = WebsiteDb.add(updated)
-      _ = regenerate(nginxConfig)
+      _ = regenerate
+      _ = reload
     } yield updated
     
   }
   
-  def regenerate(configFile: File) = {
+  def regenerate {
+    val nginxConfig = new File(config.getString("nginx.local_etc"))
+    regenerate(nginxConfig)
+  }
+  
+  def regenerate(configFile: File) {
    val wsc = WebserverConfig(
       defaultPort = 9001, 
       dataPath = new File(config.getString("nginx.data")), 
@@ -49,10 +55,24 @@ object WebsiteApi {
     writer.write(content)
     writer.close()
     
-    import scala.sys.process._
-    "./bin/reload.sh" !
 
   }
-  
-  
+
+  def reload = {
+    import scala.sys.process._
+    "./bin/reload.sh" !
+  }
+
+  def start = {
+    regenerate
+    
+    import scala.sys.process._
+    "./bin/startup.sh" !
+  }
+
+  def stop = {
+    import scala.sys.process._
+    "./bin/shutdown.sh" !
+  }
+
 }

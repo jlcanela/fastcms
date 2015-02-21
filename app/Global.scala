@@ -1,7 +1,18 @@
+import api.WebsiteApi
 import play.api._
 
 
 object Global extends GlobalSettings {
+
+  override def onStart(app: Application): Unit = {
+    WebsiteApi.start
+    Logger.info("nginx started on port 10000")
+  }
+  
+  override def onStop(app: Application): Unit = {
+    WebsiteApi.stop
+  }
+
 /*  val info = ApiInfo(
     title = "Swagger Sample App",
     description = """This is a sample server Petstore server.  You can find out more about Swagger 
