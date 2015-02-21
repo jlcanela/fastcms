@@ -1,2 +1,3 @@
 #!/bin/bash
-nginx -c /Users/jlcanela/dev/axags/fastcms/etc/nginx.conf
+DIR=$(cd `dirname $0` && cd .. && pwd)
+nginx -c $DIR/etc/nginx.conf
