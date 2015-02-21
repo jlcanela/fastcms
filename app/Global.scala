@@ -1,8 +1,5 @@
 import play.api._
 
-import com.wordnik.swagger.config._
-import com.wordnik.swagger.model._
-
 
 object Global extends GlobalSettings {
 /*  val info = ApiInfo(
