@@ -1,4 +1,5 @@
 import api.WebsiteApi
+import models.WebsiteDb
 import play.api._
 
 
@@ -6,7 +7,7 @@ object Global extends GlobalSettings {
 
   override def onStart(app: Application): Unit = {
     WebsiteApi.start
-    Logger.info("nginx started on port 10000")
+    Logger.info(s"nginx started on port ${WebsiteDb.adminPort}")
   }
   
   override def onStop(app: Application): Unit = {

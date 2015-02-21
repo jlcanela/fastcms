@@ -81,11 +81,13 @@ case class Website(id: Int, name: String, url: String, port: Int, path: String) 
 
 object WebsiteDb extends DbImpl[Website] {
 
-  def config = Play.application().configuration().getString("db.website")
-
+  def config = Play.application().configuration()
+  def configDb = config.getString("db.website")
+  lazy val adminPort = config.getInt("admin.port")
+  
   def createDefaultList: List[Website] = {
     implicit val websiteFormat = Json.format[Website]
-    Website(0, "admin", "", 10000, "admin") :: Json.fromJson[List[Website]](Json.parse(config)).fold(
+    Website(0, "admin", "", adminPort, "admin") :: Json.fromJson[List[Website]](Json.parse(configDb)).fold(
       _ => List(),
       list => list
     )
