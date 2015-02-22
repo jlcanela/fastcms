@@ -1,6 +1,6 @@
 package api
 
-import com.typesafe.config.ConfigFactory
+
 import models._
 
 import java.io.{PrintWriter, File}
@@ -10,7 +10,7 @@ import scalaz.{\/}
 
 
 import play.Play
-import play.api.{Configuration, Logger}
+import play.api.Logger
 
 
 object WebsiteApi {
