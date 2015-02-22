@@ -1,6 +1,10 @@
 package controllers
 
+import java.io.{FileReader, OutputStreamWriter, ByteArrayOutputStream, StringReader}
+import java.util
+
 import api.WebsiteApi
+import com.github.mustachejava.DefaultMustacheFactory
 import models.{Website, WebsiteDb}
 
 import play.Play
@@ -23,7 +27,24 @@ object WebsiteApiController extends Controller {
 
 
   implicit val websiteFormat = Json.format[Website]
+
+  val mf = new DefaultMustacheFactory();
+  val mustache = mf.compile(new FileReader(new java.io.File("node/views/home.handlebars")), "example");
+
   
+  def html() = Action {
+    implicit request =>
+        val scopes = new util.HashMap[String, Object]();
+        scopes.put("name", "Mustache")
+        val out = new ByteArrayOutputStream(1024 * 64)
+        //scopes.put("feature", new Feature("Perfect!"));
+        val  writer = new OutputStreamWriter(out);
+        mustache.execute(writer, scopes);
+        writer.flush();
+
+      Ok(out.toByteArray).as("text/html")
+  }
+
   def list() = Action {
     implicit request =>
       Ok(Json.toJson(WebsiteDb.all)).withHeaders(("Access-Control-Allow-Origin", "*"));

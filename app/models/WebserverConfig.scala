@@ -6,19 +6,22 @@ import java.io.File
 // dataPath = data
 // logPath = log
 // tempPath = data/temp
-case class WebserverConfig(defaultPort: Int, dataPath: File, logPath: File, tempPath: File, nginxEtcPath: File, websites: List[Website]) {
+case class WebserverConfig(defaultPort: Int, dataPath: File, wwwPath: File, logPath: File, tempPath: File, nginxEtcPath: File, websites: List[Website]) {
 
-  def pathsToCreate = dataPath :: logPath :: tempPath :: Nil ::: logPaths ::: tempPaths
+  def pathsToCreate = dataPath :: wwwPath :: logPath :: tempPath :: Nil ::: logPaths ::: tempPaths
   
-  def generateServer(website: Website) =
+  def generateServer(website: Website) = {
+    println("@" + wwwPath)
+    println(website.name + " - " + website.www(wwwPath).getCanonicalFile.getAbsolutePath)
  s"""    server {
         listen ${website.port};
         error_log ${website.log(logPath).getAbsolutePath}/error_log;
-        root ${website.www(dataPath).getCanonicalFile.getAbsolutePath}/;
+        root ${website.www(wwwPath).getCanonicalFile.getAbsolutePath}/;
         location / {
         }
     }
 """.stripMargin
+  }
 
   def generate() =
   s"""error_log ${logPath.getAbsolutePath}/error_log;

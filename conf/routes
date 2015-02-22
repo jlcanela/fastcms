@@ -21,3 +21,5 @@ DELETE  /websites/:id           controllers.WebsiteApiController.delete(id:Int)
 PUT  /websites/:id              controllers.WebsiteApiController.update(id:Int)
 
 OPTIONS    /websites             controllers.WebsiteApiController.options
+
+GET     /template              controllers.WebsiteApiController.html

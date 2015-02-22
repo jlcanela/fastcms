@@ -13,10 +13,14 @@ object ApplicationBuild extends Build {
    // "com.wordnik" %% "swagger-play2-utils" % "1.3.12",
     "org.zeroturnaround" % "zt-zip" % "1.7",
     "com.typesafe.play" %% "play-ws" % "2.4.0-M2",
-    "org.scalaz" % "scalaz-core_2.10" % "7.1.0"
+    "org.scalaz" % "scalaz-core_2.10" % "7.1.0",
+    "com.github.spullara.mustache.java" % "compiler" % "0.8.17"
+    //"org.fusesource.scalate" % "scalate-core_2.10" % "1.7.0"
     //"org.apache.commons" % "commons-compress" % "1.5",
   )
 
+  
+  
   val main = Project(appName, file(".")).enablePlugins(play.PlayScala).settings(
     version := appVersion,
     libraryDependencies ++= appDependencies,

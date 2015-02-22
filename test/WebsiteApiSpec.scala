@@ -41,7 +41,7 @@ class WebsiteApiSpec extends Specification with WebsiteFixture with TestApplicat
       // dataPath = data
       // logPath = log
       // tempPath = data/temp
-      val generatedConfig = WebserverConfig(9001, new File("data"), new File("log"), new File("data/temp"), new File("/usr/local/etc/nginx"),
+      val generatedConfig = WebserverConfig(9001, new File("data"), new File("data/www"), new File("log"), new File("data/temp"), new File("/usr/local/etc/nginx"),
         Website(1, "name1", "file1.zip", 10001, "data") ::
         Website(2, "name2", "file2.zip", 10002, "data") :: Nil
       ).generate()
