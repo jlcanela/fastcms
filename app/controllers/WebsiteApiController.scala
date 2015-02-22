@@ -28,10 +28,9 @@ object WebsiteApiController extends Controller {
 
   implicit val websiteFormat = Json.format[Website]
 
+  /*
   val mf = new DefaultMustacheFactory();
   val mustache = mf.compile(new FileReader(new java.io.File("node/views/home.handlebars")), "example");
-
-  
   def html() = Action {
     implicit request =>
         val scopes = new util.HashMap[String, Object]();
@@ -43,7 +42,7 @@ object WebsiteApiController extends Controller {
         writer.flush();
 
       Ok(out.toByteArray).as("text/html")
-  }
+  }*/
 
   def list() = Action {
     implicit request =>
