@@ -33,7 +33,7 @@ class WebsiteApiSpec extends Specification with WebsiteFixture with TestApplicat
   "WebsiteApi" should {
     "provide create feature" in new CustomApplication(Nil) {
       (WebsiteApi.create(website0) must be_==(\/.right(website0))) and 
-        (WebsiteDb.all must be_==(websites2))
+        (WebsiteApi.websiteDb.all must be_==(websites2))
     }
     
     "provide an nginx config file generation" in {

@@ -38,13 +38,15 @@ case class Website(id: Int, name: String, url: String, port: Int, path: String) 
 
 }
 
-object WebsiteDb extends DbImpl[Website] {
+case class WebsiteDb(configDb: String, adminPort: Int, wwwPath: File) extends DbImpl[Website] {
 
-  def config = Play.application().configuration()
-  def configDb = config.getString("db.website")
-  lazy val adminPort = config.getInt("admin.port")
-  lazy val wwwPath = new File(config.getString("nginx.www"))
-
+  def this(config: play.Configuration) = this(config.getString("db.website"), config.getInt("admin.port"), new java.io.File(config.getString("nginx.www")))
+  //def config = Play.application().configuration()
+  /*def configDb = config.getString("db.website")
+  def adminPort = config.getInt("admin.port")
+  def wwwPath = new File(config.getString("nginx.www"))
+*/
+  
   /**
    * fetch the file and unzip it to path
    * @param path
@@ -87,19 +89,28 @@ object WebsiteDb extends DbImpl[Website] {
     index.map(f => \/.right(f.replace("index.html", ""))) getOrElse \/.left(s"index.html file not found ($path)")
   }
 
-  def findWebsites = {
+  def findWebsites : List[(String, String)] = try {
     val directoryFilter = new FileFilter {
       override def accept(pathname: File): Boolean = pathname.isDirectory
     }
-    wwwPath.listFiles(directoryFilter).toList.flatMap { p => 
-      checkContent(p) fold (
-        err => None,
-        _ match {
-          case "" => Some((p.getName, ""))
-          case path =>  Some((p.getName, path))
-        }
-      )
-    }
+    Option(wwwPath) map { wwwPath => 
+      wwwPath.listFiles(directoryFilter).toList.flatMap { p => 
+        checkContent(p) fold (
+          err => None,
+          _ match {
+            case "" => Some((p.getName, ""))
+            case path =>  Some((p.getName, path))
+          }
+        )
+      }  
+    } getOrElse {
+      Logger.logger.warn("wwwPath not initialized :" + wwwPath)
+      List()
+    } 
+  } catch {
+    case ex: Exception => Logger.logger.error(ex.getClass.toString + " - " + ex.getMessage)
+      ex.printStackTrace()
+      List()
   }
   
   def createDefaultList: List[Website] = {

@@ -16,39 +16,42 @@ import play.api.{Configuration, Logger}
 object WebsiteApi {
   
   lazy val config = Play.application().configuration()
+  lazy val configDb = config.getString("db.website")
   lazy val wwwPath = config.getString("nginx.www")
-  
+  lazy val adminPort = config.getInt("admin.port")
+
+  lazy val websiteDb = WebsiteDb(configDb, adminPort, new File(wwwPath))
+
   def create(website: Website): \/[String, Website] = {
     Logger.info(s"adding $website")
 
     val path = website.www(new File(wwwPath))// + File.separator + website.name
 
     for {
-      fetched <- WebsiteDb.fetchContent(website.url, path)
-      path <- WebsiteDb.checkContent(path)
+      fetched <- websiteDb.fetchContent(website.url, path)
+      path <- websiteDb.checkContent(path)
       updated = website.copy(path = path)
-      _ = WebsiteDb.add(updated)
+      _ = websiteDb.add(updated)
       _ = regenerate
       _ = reload
     } yield updated
-    
+
   }
-  
+
   def regenerate {
     val nginxConfig = new File(config.getString("nginx.local_etc"))
-    
     regenerate(nginxConfig)
   }
 
   def regenerate(configFile: File) {
-   val wsc = WebserverConfig(
-      defaultPort = 9001, 
+    val wsc = WebserverConfig(
+      defaultPort = 9001,
       dataPath = new File(config.getString("nginx.data")),
       wwwPath = new File(config.getString("nginx.www")),
       logPath = new File(config.getString("nginx.log")),
       tempPath = new File(config.getString("nginx.temp")),
       nginxEtcPath = new File(config.getString("nginx.etc")),
-      websites = WebsiteDb.all
+      websites = websiteDb.all
     )
     val content = wsc.generate()
 
@@ -56,7 +59,7 @@ object WebsiteApi {
       Logger.logger.info(s"creating folder for ${folder.getAbsolutePath}")
       folder.mkdirs()
     }}
-    
+
     val folder = configFile.getParentFile
     if (!folder.exists()) folder.mkdirs()
 
@@ -73,7 +76,7 @@ object WebsiteApi {
 
   def start = {
     regenerate
-    
+
     import scala.sys.process._
     "./bin/startup.sh" !
   }

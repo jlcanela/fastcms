@@ -47,7 +47,7 @@ object WebsiteApiController extends Controller {
 
   def list() = Action {
     implicit request =>
-      Ok(Json.toJson(WebsiteDb.all)).withHeaders(("Access-Control-Allow-Origin", "*"));
+      Ok(Json.toJson(WebsiteApi.websiteDb.all)).withHeaders(("Access-Control-Allow-Origin", "*"));
   }
 
   def toJsResult[T, U](json: Option[JsValue], f: T => U)(implicit ev: Reads[T], ev2: Writes[U]) = (for {
@@ -103,10 +103,10 @@ object WebsiteApiController extends Controller {
 
   def delete(id:Int) = Action {
     implicit request =>
-      WebsiteDb.delete(id)
+      WebsiteApi.websiteDb.delete(id)
       Ok(JsObject(Seq("success" -> JsBoolean(true))))
   }
 
-  def update(id:Int) = JsonParserAction(ACCEPTED, WebsiteDb.update(id))
+  def update(id:Int) = JsonParserAction(ACCEPTED, WebsiteApi.websiteDb.update(id))
 
 }

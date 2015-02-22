@@ -12,7 +12,7 @@ trait WebsiteFixture {
   val website1 = Website(id = 1, name = "name1", url = "file:test/resources/sample.zip", port = 10002, path = "")
   val website_update = website0.copy(name = "name2", url = "file:test/resources/sample.zip", port = 10003, path = "")
   val DB_WEBSITES = List(website0, adminWebsite)
-  val websites2 = List(website0, website1)
+  val websites2 = List(website0, adminWebsite)
   
   val WEBSITES_JSON = Json.toJson(DB_WEBSITES)
   val CREATED_WEBSITES_JSON = Json.toJson(websites2)

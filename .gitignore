@@ -23,3 +23,9 @@ project/plugins/project/
 data/www/
 etc/nginx.conf
 log/
+
+# node specific
+node/node_modules
+
+# macos specific
+.DS_Store
