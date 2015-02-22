@@ -52,7 +52,10 @@ object WebsiteApi {
     )
     val content = wsc.generate()
 
-    (configFile.getParentFile :: wsc.pathsToCreate) foreach { folder => if (!folder.exists()) folder.mkdirs()}
+    (configFile.getParentFile :: wsc.pathsToCreate) foreach { folder => if (!folder.exists()) {
+      Logger.logger.info(s"creating folder for ${folder.getAbsolutePath}")
+      folder.mkdirs()
+    }}
     
     val folder = configFile.getParentFile
     if (!folder.exists()) folder.mkdirs()

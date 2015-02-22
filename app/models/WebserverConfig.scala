@@ -10,9 +10,7 @@ case class WebserverConfig(defaultPort: Int, dataPath: File, wwwPath: File, logP
 
   def pathsToCreate = dataPath :: wwwPath :: logPath :: tempPath :: Nil ::: logPaths ::: tempPaths
   
-  def generateServer(website: Website) = {
-    println("@" + wwwPath)
-    println(website.name + " - " + website.www(wwwPath).getCanonicalFile.getAbsolutePath)
+  def generateServer(website: Website) =
  s"""    server {
         listen ${website.port};
         error_log ${website.log(logPath).getAbsolutePath}/error_log;
@@ -21,7 +19,6 @@ case class WebserverConfig(defaultPort: Int, dataPath: File, wwwPath: File, logP
         }
     }
 """.stripMargin
-  }
 
   def generate() =
   s"""error_log ${logPath.getAbsolutePath}/error_log;
