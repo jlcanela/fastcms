@@ -38,21 +38,23 @@
             </button>
             <a class="navbar-brand" href="#">Fast CMS</a>
         </div>
-        <div id="navbar" class="collapse navbar-collapse">
+        <div id="navbar" class="collapse navbar-collapse" ng-init="tab = 2">
             <ul class="nav navbar-nav">
-                <li><a href="#home">Home</a></li>
-                <li class="active"><a href="#">Websites</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li ng-class="{ active:tab === 1 }"><a href="#home" ng-click="tab = 1">Home</a></li>
+                <li ng-class="{ active:tab === 2 }"><a href="#" ng-click="tab = 2">Websites</a></li>
+                <li ng-class="{ active:tab === 3 }"><a href="#sources" ng-click="tab = 3">Sources</a></li>
+                <li ng-class="{ active:tab === 4 }"><a href="#about" ng-click="tab = 4">About</a></li>
+                <li ng-class="{ active:tab === 5 }"><a href="#contact" ng-click="tab = 5">Contact</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
 </nav>
+
 <div>&nbsp;</div>
 <div>&nbsp;</div>
 <div>&nbsp;</div>
 
-<div class="container" ng-controller="WebsiteController as websiteCtrl">
+<div class="container" ng-show="tab === 2" ng-controller="WebsiteController as websiteCtrl">
 
     <div class="starter-template">
         <h1>Website management</h1>
@@ -116,6 +118,30 @@
     </div>
 </div><!-- /.container -->
 
+<div class="container" ng-show="tab === 3" ng-controller="SourceController as sourceCtrl">
+
+    <div class="starter-template">
+        <h1>Source management</h1>
+        <p class="lead">Check your sources in seconds.</p>
+    </div>
+
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading"><h3 class="panel-title">Your sources:</h3></div>
+
+        <div>
+            <!-- Table -->
+            <table class="table">
+                <tr><th>Name</th><th>Url</th></tr>
+                <tr ng-repeat="source in sourceCtrl.sources track by $index">
+                    <td>{{source.name}}</td>
+                    <td><a href="{{source.url}}" target="_blank">{{source.url}}</a></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div><!-- /.container -->
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
