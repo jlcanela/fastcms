@@ -40,7 +40,7 @@ case class Website(id: Int, name: String, url: String, port: Int, path: String) 
 
 case class WebsiteDb(configDb: String, adminPort: Int, wwwPath: File) extends DbImpl[Website] {
 
-  def this(config: play.Configuration) = this(config.getString("db.website"), config.getInt("admin.port"), new java.io.File(config.getString("nginx.www")))
+  def this(config: play.Configuration) = this(config.getString("jsondb.website"), config.getInt("admin.port"), new java.io.File(config.getString("nginx.www")))
   //def config = Play.application().configuration()
   /*def configDb = config.getString("db.website")
   def adminPort = config.getInt("admin.port")

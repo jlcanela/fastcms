@@ -16,7 +16,7 @@ import play.api.Logger
 object WebsiteApi {
   
   lazy val config = Play.application().configuration()
-  lazy val configDb = config.getString("db.website")
+  lazy val configDb = config.getString("jsondb.website")
   lazy val wwwPath = config.getString("nginx.www")
   lazy val adminPort = config.getInt("admin.port")
 

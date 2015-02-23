@@ -36,7 +36,7 @@ trait TestServerHelper { self: Specification =>
 
   def app(websites: List[Website]) = {
     implicit val format = Json.format[Website]
-    FakeApplication(additionalConfiguration = Map("db.website" -> Json.toJson(websites).toString))
+    FakeApplication(additionalConfiguration = Map("jsondb.website" -> Json.toJson(websites).toString))
   }
 
   abstract class CustomServer(websites: List[Website]) extends WithServer(port = 3333, app = app(websites)) with WebsiteHelper

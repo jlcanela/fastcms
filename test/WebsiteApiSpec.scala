@@ -24,7 +24,7 @@ trait TestApplicationHelper { self: Specification =>
 */
   def app(websites: List[Website]) = {
     implicit val format = Json.format[Website]
-    FakeApplication(additionalConfiguration = Map("db.website" -> Json.toJson(websites).toString))
+    FakeApplication(additionalConfiguration = Map("jsondb.website" -> Json.toJson(websites).toString))
   }
 
   abstract class CustomApplication(websites: List[Website]) extends WithApplication(app = app(websites))
