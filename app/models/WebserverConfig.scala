@@ -10,13 +10,20 @@ case class WebserverConfig(defaultPort: Int, dataPath: File, wwwPath: File, logP
 
   def pathsToCreate = dataPath :: wwwPath :: logPath :: tempPath :: Nil ::: logPaths ::: tempPaths
   
+  def generateProxy(website: Website) = if (!website.proxy) "" else
+    """location ~* \\.(html)""" + "$" +s""" {
+    proxy_pass http://127.0.0.1:9000/serve?host=${website.name}&uri="""+"$uri&args=$args;" +
+      """
+        |}""".stripMargin
+  
   def generateServer(website: Website) =
- s"""    server {
+  s"""    server {
         listen ${website.port};
         error_log ${website.log(logPath).getAbsolutePath}/error_log;
         root ${website.www(wwwPath).getCanonicalFile.getAbsolutePath}/;
         location / {
         }
+       """ + generateProxy(website) + """
     }
 """.stripMargin
 

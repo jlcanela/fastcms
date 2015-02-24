@@ -27,7 +27,7 @@ import play.api.{Logger, Configuration}
 
 import scalaz.\/
 
-case class Website(id: Int, name: String, url: String, port: Int, path: String) {
+case class Website(id: Int, name: String, url: String, port: Int, path: String, proxy: Boolean = false) {
 
   def log(rootLogPath: File) = new File(rootLogPath, s"$name")
   def www(wwwPath: File) = path match {
@@ -120,7 +120,7 @@ case class WebsiteDb(configDb: String, adminPort: Int, wwwPath: File) extends Db
     }
 
     val websites = if (configDb.isEmpty) {
-      (findWebsites zipWithIndex) map { case ((name, path), index) => Website(index + 1, name, "", adminPort + index + 1, path)}
+      (findWebsites zipWithIndex) map { case ((name, path), index) => Website(index + 1, name, "", adminPort + index + 1, path, true)}
     } else {
       implicit val websiteFormat = Json.format[Website]
       Json.fromJson[List[Website]](Json.parse(configDb)).fold(
