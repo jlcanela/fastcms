@@ -2,7 +2,9 @@ package controllers
 
 import models.Website
 
+
 import play.api.libs.json._
+import play.api.Logger
 import play.api.mvc._
 
 import scalaz.\/
@@ -14,7 +16,10 @@ trait ControllerHelper { self : Controller =>
   def toJsResult[T, U](json: Option[JsValue], f: T => U)(implicit ev: Reads[T], ev2: Writes[U]) = (for {
     v <- json
     r = Json.fromJson[T](v)(ev).fold(
-      err => Error(err).toJson,
+      err => {
+        Logger.logger.warn(err.toString)
+        Error(err).toJson
+      },
       good => Json.toJson(f(good))
     )
   } yield r) getOrElse JsString(s"Invalid Json Error: $json")
@@ -38,9 +43,11 @@ trait ControllerHelper { self : Controller =>
 
       val obj = request.body.validate[T]
       obj.fold(
-        errors =>
+        errors => {
+          Logger.info(errors.toString)
           BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
-            .withHeaders(("Access-Control-Allow-Origin", "*")),
+            .withHeaders(("Access-Control-Allow-Origin", "*"))
+        },
         o =>
           Status(code)(Json.toJson(f(o))).withHeaders(("Access-Control-Allow-Origin", "*"))
       )

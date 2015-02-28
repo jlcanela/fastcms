@@ -23,6 +23,7 @@
 
             ctrl.website.id = 1;
             ctrl.website.path = "";
+            ctrl.website.proxy = false;
 
             $http({
                 url: 'http://localhost:9000/websites',
