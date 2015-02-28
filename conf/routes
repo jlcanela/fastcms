@@ -26,4 +26,6 @@ OPTIONS    /websites             controllers.WebsiteApiController.options
 
 GET       /sources               controllers.SourceController.list
 
+GET       /rules                 controllers.SourceController.rules
+
 GET       /serve                 controllers.ServeController.serve

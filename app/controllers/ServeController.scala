@@ -1,18 +1,17 @@
 package controllers
 
+import java.io.{FileReader, OutputStreamWriter, ByteArrayOutputStream}
+
 import anorm._
-import api.WebsiteApi
-import models.Source
 import play.Logger
 import play.api.Play.current
 import play.api.db._
 import play.api.libs.json._
 import play.api.mvc._
 
-import java.io.{FileReader, OutputStreamWriter, ByteArrayOutputStream}
+import models.{Source, Rule}
+import api.{ServeApi, WebsiteApi}
 
-case class Rule(id: Int, uri: String, content: String, priority: Int) {
-}
 
 object ServeController extends Controller with ControllerHelper {
 
@@ -21,24 +20,17 @@ object ServeController extends Controller with ControllerHelper {
   import com.github.mustachejava.DefaultMustacheFactory
   val mf = new DefaultMustacheFactory();
   
-  val rules : List[Rule] = DB.withConnection { implicit conn =>
-    // do whatever you need with the connection
-    // Create an SQL query
-    val selectRules = SQL("Select * from RULE")
-
-    selectRules().map(row =>
-      row[Int]("ID") -> row[String]("URI") -> row[String]("CONTENT") -> row[Int]("PRIORITY")
-    ).map { case (((id, uri), content), priority) => Rule(id, uri, content, priority) }.toList
-  }
-
+  val rules = DB.withConnection { implicit conn => Rule.fetch }
+  
 
   def serve() = Action {
     implicit request =>
       val host = request.queryString("host").headOption getOrElse ""
       val uri = request.queryString("uri").headOption getOrElse ""
 
+      
       val bytes = (for {
-        content <- rules.filter { _.uri == uri }.sortBy(_.priority).headOption.map(_.content)
+        content <- ServeApi(rules).contentRef(host, uri)
         file <-  WebsiteApi.websiteDb.all.filter { _.name == host} .headOption.map { _.path } map { _ + s"$content.html"}
         mustache = mf.compile(new FileReader(new java.io.File(file)), content)
         scopes = new java.util.HashMap[String, Object]()
@@ -46,7 +38,7 @@ object ServeController extends Controller with ControllerHelper {
         writer = new OutputStreamWriter(out)
         _ = mustache.execute(writer, scopes)
         _ = writer.flush()
-      } yield out.toByteArray) getOrElse("ERR".getBytes("UTF-8"))
+      } yield out.toByteArray).getOrElse("ERR".getBytes("UTF-8"))
 
       Logger.info("" + bytes.length)
 
