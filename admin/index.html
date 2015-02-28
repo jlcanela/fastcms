@@ -43,8 +43,9 @@
                 <li ng-class="{ active:tab === 1 }"><a href="#home" ng-click="tab = 1">Home</a></li>
                 <li ng-class="{ active:tab === 2 }"><a href="#" ng-click="tab = 2">Websites</a></li>
                 <li ng-class="{ active:tab === 3 }"><a href="#sources" ng-click="tab = 3">Sources</a></li>
-                <li ng-class="{ active:tab === 4 }"><a href="#about" ng-click="tab = 4">About</a></li>
-                <li ng-class="{ active:tab === 5 }"><a href="#contact" ng-click="tab = 5">Contact</a></li>
+                <li ng-class="{ active:tab === 4 }"><a href="#rules" ng-click="tab = 4">Rules</a></li>
+                <li ng-class="{ active:tab === 5 }"><a href="#about" ng-click="tab = 5">About</a></li>
+                <li ng-class="{ active:tab === 6 }"><a href="#contact" ng-click="tab = 6">Contact</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -143,6 +144,35 @@
         </div>
     </div>
 </div><!-- /.container -->
+
+<div class="container" ng-show="tab === 4" ng-controller="RuleController as ruleCtrl">
+
+    <div class="starter-template">
+        <h1>Rule management</h1>
+        <p class="lead">Check your rules in seconds.</p>
+    </div>
+
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading"><h3 class="panel-title">Your rules:</h3></div>
+
+        <div>
+            <!-- Table -->
+            <table class="table">
+                <tr><th>Id</th><th>Host</th><th>Uri</th><th>Content</th><th>Priority</th></tr>
+                <tr ng-repeat="rule in ruleCtrl.rules track by $index">
+                    <td>{{rule.id}}</td>
+                    <td>{{rule.host}}</td>
+                    <td>{{rule.uri}}</td>
+                    <td>{{rule.content}}</td>
+                    <td>{{rule.priority}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div><!-- /.container -->
+
 
 <!-- Bootstrap core JavaScript
 ================================================== -->

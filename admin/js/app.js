@@ -50,5 +50,18 @@
         });
 
     }]);
+
+    var rc = app.controller("RuleController", ['$http', function($http){ 
+        var ctrl = this;
+
+        ctrl.rules = [];
+
+        $http.get('http://localhost:9000/rules').success(function(data){
+            console.log(data);
+            ctrl.rules = data;
+        });
+
+    }]);
+
 }());
 
