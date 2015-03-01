@@ -1,8 +1,11 @@
 package controllers
 
-import java.io.{FileReader, OutputStreamWriter, ByteArrayOutputStream}
+import java.io._
+import java.util
 
 import anorm._
+import com.github.jknack.handlebars.Handlebars
+import com.github.jknack.handlebars.io.FileTemplateLoader
 import play.Logger
 import play.api.Play.current
 import play.api.db._
@@ -17,32 +20,41 @@ object ServeController extends Controller with ControllerHelper {
 
   implicit val sourceFormat = Json.format[Source]
 
-  import com.github.mustachejava.DefaultMustacheFactory
-  val mf = new DefaultMustacheFactory();
+  //import com.github.mustachejava.DefaultMustacheFactory
+  //val mf = new DefaultMustacheFactory();
+  //val m1 = mf.compile(new StringReader("""la test {{firstname}} mustache"""), "tsr")
+
+  //Logger.info("tsr template:" + mf.getReader("tsr"))
+  
+  // mf.compile(new InputStreamReadear())
   
   val rules = DB.withConnection { implicit conn => Rule.fetch }
   
 
+  def scopes = {
+    val scopes = new java.util.HashMap[String, Any]()
+    scopes.put("firstname", "jean-luc")
+    scopes.put("job", "developer")
+    scopes
+  }
+  
   def serve() = Action {
     implicit request =>
       val host = request.queryString("host").headOption getOrElse ""
       val uri = request.queryString("uri").headOption getOrElse ""
-
       
-      val bytes = (for {
+
+      val html = (for {
         content <- ServeApi(rules).contentRef(host, uri)
-        file <-  WebsiteApi.websiteDb.all.filter { _.name == host} .headOption.map { _.path } map { _ + s"$content.html"}
-        mustache = mf.compile(new FileReader(new java.io.File(file)), content)
-        scopes = new java.util.HashMap[String, Object]()
-        out = new ByteArrayOutputStream(1024 * 64)
-        writer = new OutputStreamWriter(out)
-        _ = mustache.execute(writer, scopes)
-        _ = writer.flush()
-      } yield out.toByteArray).getOrElse("ERR".getBytes("UTF-8"))
+        file <-  WebsiteApi.websiteDb.all.filter { _.name == host} .headOption.map { _.path }// map { _ + s"$content.html"}
+        loader = new FileTemplateLoader(file, ".html")
+        handlebars = new Handlebars(loader)
+        template = handlebars.compile(content)
+      } yield template.apply(scopes)).getOrElse("ERR")
 
-      Logger.info("" + bytes.length)
+      Logger.info("" + html.length)
 
-       Ok(bytes).as("text/html")
+       Ok(html).as("text/html")
 
   }
 
