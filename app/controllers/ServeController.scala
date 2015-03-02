@@ -5,6 +5,7 @@ import java.util
 
 import anorm._
 import com.github.jknack.handlebars.Handlebars
+import com.github.jknack.handlebars.cache.ConcurrentMapTemplateCache
 import com.github.jknack.handlebars.io.FileTemplateLoader
 import play.Logger
 import play.api.Play.current
@@ -30,12 +31,20 @@ object ServeController extends Controller with ControllerHelper {
   
   val rules = DB.withConnection { implicit conn => Rule.fetch }
   
+  val cache = new ConcurrentMapTemplateCache()
 
-  def scopes = {
-    val scopes = new java.util.HashMap[String, Any]()
-    scopes.put("firstname", "jean-luc")
-    scopes.put("job", "developer")
-    scopes
+  def context = {
+    import com.github.jknack.handlebars.Context
+    import com.github.jknack.handlebars.JsonNodeValueResolver
+    import org.codehaus.jackson.map.ObjectMapper
+    import org.codehaus.jackson.JsonNode
+
+    val mapper = new ObjectMapper()
+    val json = mapper.readValue("""{"firstname":"john"}""", classOf[JsonNode])
+    Context
+      .newBuilder(json)
+      .resolver(JsonNodeValueResolver.INSTANCE)
+      .build()
   }
   
   def serve() = Action {
@@ -48,9 +57,9 @@ object ServeController extends Controller with ControllerHelper {
         content <- ServeApi(rules).contentRef(host, uri)
         file <-  WebsiteApi.websiteDb.all.filter { _.name == host} .headOption.map { _.path }// map { _ + s"$content.html"}
         loader = new FileTemplateLoader(file, ".html")
-        handlebars = new Handlebars(loader)
+        handlebars = (new Handlebars(loader)).`with`(cache)
         template = handlebars.compile(content)
-      } yield template.apply(scopes)).getOrElse("ERR")
+      } yield template.apply(context)).getOrElse("ERR")
 
       Logger.info("" + html.length)
 

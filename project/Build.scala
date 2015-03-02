@@ -15,6 +15,7 @@ object ApplicationBuild extends Build {
     "com.typesafe.play" %% "play-ws" % "2.4.0-M2",
     "org.scalaz" % "scalaz-core_2.10" % "7.1.0",
     "com.github.jknack" % "handlebars" % "2.0.0",
+    "com.github.jknack" % "handlebars-json" % "2.0.0",
 //    "com.github.spullara.mustache.java" % "compiler" % "0.8.17",
     "com.h2database" % "h2" % "1.4.185",
     //"com.typesafe.play" %% "anorm" % "2.4.0-M2",
