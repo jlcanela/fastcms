@@ -13,8 +13,8 @@ import play.api.db._
 import play.api.libs.json._
 import play.api.mvc._
 
-import models.{Source, Rule}
-import api.{ServeApi, WebsiteApi}
+import models.{Source, RoutingRule}
+import api.{ContentApi, RuleApi, WebsiteApi}
 
 
 object ServeController extends Controller with ControllerHelper {
@@ -29,7 +29,7 @@ object ServeController extends Controller with ControllerHelper {
   
   // mf.compile(new InputStreamReadear())
   
-  val rules = DB.withConnection { implicit conn => Rule.fetch }
+  val rules = DB.withConnection { implicit conn => RuleApi.fetchRoutingRule }
   
   val cache = new ConcurrentMapTemplateCache()
 
@@ -54,14 +54,12 @@ object ServeController extends Controller with ControllerHelper {
       
 
       val html = (for {
-        content <- ServeApi(rules).contentRef(host, uri)
+        content <- ContentApi.findEntity(host, uri, rules)
         file <-  WebsiteApi.websiteDb.all.filter { _.name == host} .headOption.map { _.path }// map { _ + s"$content.html"}
         loader = new FileTemplateLoader(file, ".html")
         handlebars = (new Handlebars(loader)).`with`(cache)
         template = handlebars.compile(content)
       } yield template.apply(context)).getOrElse("ERR")
-
-      Logger.info("" + html.length)
 
        Ok(html).as("text/html")
 

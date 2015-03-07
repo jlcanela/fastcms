@@ -7,5 +7,5 @@ INSERT INTO SOURCE VALUES(3, 'rule', 'http://127.0.0.1:9000/rules');
 DROP TABLE RULE;
 CREATE TABLE RULE(ID INT PRIMARY KEY, HOST VARCHAR(255),  URI VARCHAR(255), CONTENT VARCHAR(255), PRIORITY INT);
 INSERT INTO RULE VALUES (1, '', '/index.html', 'index', 0);
-INSERT INTO RULE VALUES (2, '', '/([a-z-_]*).html', '{0}', 0);
-INSERT INTO RULE VALUES (3, '', '/([a-z-_]*)/([a-z-_]*).html', '{0}{1}', 0);
+INSERT INTO RULE VALUES (2, '', '/([a-z-_]*).html', '{0}', 1);
+INSERT INTO RULE VALUES (3, '', '/([a-z-_]*)/([a-z-_]*).html', '{0}{1}', 2);
