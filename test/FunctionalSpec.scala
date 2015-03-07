@@ -47,7 +47,7 @@ class FunctionalSpec extends Specification with WebsiteFixture with TestServerHe
   "API" should {
     "provide websites_GET API" in {
       "simple get succeeds" in new CustomServer(DB_WEBSITES) {
-        websites_GET must haveResult(msg = "simple get", code = OK, json = WEBSITES_JSON)
+        websites_GET must haveResult(msg = "simple get", code = OK, json = Json.toJson((adminWebsite::DB_WEBSITES).reverse))
       }
     }
 

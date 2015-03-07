@@ -21,6 +21,7 @@ object ApplicationBuild extends Build {
     "com.h2database" % "h2" % "1.4.185",
     //"com.typesafe.play" %% "anorm" % "2.4.0-M2",
     "com.typesafe.play" %% "play-jdbc" % "2.4.0-M2",
+    "com.typesafe.play" %% "play-cache" % "2.4.0-M2",
     "com.typesafe.play" %% "anorm" % "2.4.0-M2"
     //"org.fusesource.scalate" % "scalate-core_2.10" % "1.7.0"
     //"org.apache.commons" % "commons-compress" % "1.5",

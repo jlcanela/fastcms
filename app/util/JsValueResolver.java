@@ -6,18 +6,13 @@ import com.github.jknack.handlebars.ValueResolver;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.*;
 
-//import java.util.*;
-
-
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-//import java.util.Map.Entry;
 import java.util.Set;
 
 import play.api.libs.json.*;
-import scala.collection.Seq;
 
 /**
  * Resolve a context stack value from {@link org.codehaus.jackson.JsonNode}.
