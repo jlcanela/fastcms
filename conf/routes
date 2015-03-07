@@ -24,8 +24,13 @@ OPTIONS    /websites             controllers.WebsiteApiController.options
 
 # GET     /template              controllers.WebsiteApiController.html
 
+GET       /serve                 controllers.ServeController.serve
+
+GET       /content/:name         controllers.ContentController.content(name: String)
+
 GET       /sources               controllers.SourceController.list
 
 GET       /rules                 controllers.SourceController.rules
 
-GET       /serve                 controllers.ServeController.serve
+
+GET       /articles              controllers.SourceController.articles

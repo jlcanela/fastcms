@@ -92,7 +92,7 @@ case class WebsiteDb(configDb: String, adminPort: Int, wwwPath: File) extends Db
       override def www(path: File) = new File("admin")
     }
 
-    val websites = if (configDb.isEmpty) {
+    val websites = if (Option(configDb).map(_.isEmpty) getOrElse(true)) {
       (findWebsites zipWithIndex) map { case ((name, path), index) => Website(index + 1, name, "", adminPort + index + 1, path, true)}
     } else {
       implicit val websiteFormat = Json.format[Website]

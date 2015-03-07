@@ -1,7 +1,8 @@
 package controllers
 
-import api.WebsiteApi
-import models.Website
+import api.{WebsiteApiConfig, WebsiteApi}
+import models.{WebsiteDb, Website}
+import play.api.Play
 
 import play.api.libs.json._
 import play.api.mvc._
@@ -30,14 +31,21 @@ object WebsiteApiController extends Controller with ControllerHelper {
       Ok(out.toByteArray).as("text/html")
   }*/
 
+  //val config = new play.Configuration(app.configuration)
+  
+  val websiteApiConfig : WebsiteApiConfig = WebsiteApiConfig(new play.Configuration(Play.current.configuration))
+
+  val websiteDb = new WebsiteDb(websiteApiConfig.configDb, websiteApiConfig.adminPort, websiteApiConfig.wwwPath)
+
+
   def list() = Action {
     implicit request =>
-      Ok(Json.toJson(WebsiteApi.websiteDb.all)).withHeaders(("Access-Control-Allow-Origin", "*"));
+      Ok(Json.toJson(websiteDb.all)).withHeaders(("Access-Control-Allow-Origin", "*"));
   }
 
 
 
-  def create() = JsonParserAction(CREATED, WebsiteApi.create)
+  def create() = JsonParserAction(CREATED, WebsiteApi.create(websiteApiConfig, websiteDb))
 
   def options = Action {
     Ok("").withHeaders(
@@ -51,10 +59,10 @@ object WebsiteApiController extends Controller with ControllerHelper {
 
   def delete(id:Int) = Action {
     implicit request =>
-      WebsiteApi.websiteDb.delete(id)
+      websiteDb.delete(id)
       Ok(JsObject(Seq("success" -> JsBoolean(true))))
   }
 
-  def update(id:Int) = JsonParserAction(ACCEPTED, WebsiteApi.websiteDb.update(id))
+  def update(id:Int) = JsonParserAction(ACCEPTED, websiteDb.update(id))
 
 }

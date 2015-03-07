@@ -1,8 +1,8 @@
 package controllers
 
 
-import api.RuleApi
-import models.{RoutingRule, Source}
+import api.DbApi
+import models.{Article, RoutingRule, Source}
 import play.api.libs.json._
 import play.api.mvc._
 import play.api.db._
@@ -14,10 +14,17 @@ object SourceController extends Controller with ControllerHelper {
 
   implicit val sourceFormat = Json.format[Source]
   implicit val ruleFormat = Json.format[RoutingRule]
+  implicit val articleFormat = Json.format[Article]
 
+  private def fetch[T](f: java.sql.Connection => List[T])(implicit format: Format[T]) = Action {
+    implicit request =>
+      def res = DB.withConnection { implicit conn => f(conn) }
+      Ok(Json.toJson(res)).withHeaders(("Access-Control-Allow-Origin", "*"));
+  }
+  
   def list() = Action {
     implicit request =>
-      def res = DB.withConnection { implicit conn => Source.fetch }
+      def res = DB.withConnection { implicit conn => DbApi.fetchSource }
 
       Ok(Json.toJson(res)).withHeaders(("Access-Control-Allow-Origin", "*"));
   }
@@ -25,10 +32,13 @@ object SourceController extends Controller with ControllerHelper {
 
   def rules = Action {
     implicit request =>
-      def res = DB.withConnection { implicit conn => RuleApi.fetchRoutingRule }
+      def res = DB.withConnection { implicit conn => DbApi.fetchRoutingRule }
 
       Ok(Json.toJson(res)).withHeaders(("Access-Control-Allow-Origin", "*"));
   }
+
+
+  def articles = fetch[Article] { conn:  java.sql.Connection => DbApi.fetchArticle(conn) }
 
 
 }

@@ -2,7 +2,7 @@ package test
 
 import java.io.File
 
-import api.WebsiteApi
+import api.{WebsiteApiConfig, WebsiteApi}
 import models.{WebsiteDb, WebserverConfig, Website}
 import org.specs2.mutable.Specification
 import org.zeroturnaround.zip.ZipUtil
@@ -32,8 +32,11 @@ trait TestApplicationHelper { self: Specification =>
 class WebsiteApiSpec extends Specification with WebsiteFixture with TestApplicationHelper {
   "WebsiteApi" should {
     "provide create feature" in new CustomApplication(Nil) {
-      (WebsiteApi.create(website0) must be_==(\/.right(website0))) and 
-        (WebsiteApi.websiteDb.all must be_==(websites2))
+      lazy val websiteApiConfig = WebsiteApiConfig(new play.Configuration(app.configuration))
+      lazy val websiteDb = WebsiteDb(websiteApiConfig.configDb,websiteApiConfig.adminPort, websiteApiConfig.wwwPath)
+
+      (WebsiteApi.create(websiteApiConfig, websiteDb)(website0) must be_==(\/.right(website0))) and
+        (websiteDb.all must be_==(websites2))
     }
     
     "provide an nginx config file generation" in {
