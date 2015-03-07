@@ -14,7 +14,7 @@ import play.api.libs.json._
 import play.api.mvc._
 
 import models.{Source, RoutingRule}
-import api.{ContentApi, RuleApi, WebsiteApi}
+import api.{RenderingApi, ContentApi, RuleApi, WebsiteApi}
 
 
 object ServeController extends Controller with ControllerHelper {
@@ -30,22 +30,7 @@ object ServeController extends Controller with ControllerHelper {
   // mf.compile(new InputStreamReadear())
   
   val rules = DB.withConnection { implicit conn => RuleApi.fetchRoutingRule }
-  
-  val cache = new ConcurrentMapTemplateCache()
 
-  def context = {
-    import com.github.jknack.handlebars.Context
-    import com.github.jknack.handlebars.JsonNodeValueResolver
-    import org.codehaus.jackson.map.ObjectMapper
-    import org.codehaus.jackson.JsonNode
-
-    val mapper = new ObjectMapper()
-    val json = mapper.readValue("""{"firstname":"john"}""", classOf[JsonNode])
-    Context
-      .newBuilder(json)
-      .resolver(JsonNodeValueResolver.INSTANCE)
-      .build()
-  }
   
   def serve() = Action {
     implicit request =>
@@ -54,12 +39,10 @@ object ServeController extends Controller with ControllerHelper {
       
 
       val html = (for {
-        content <- ContentApi.findEntity(host, uri, rules)
-        file <-  WebsiteApi.websiteDb.all.filter { _.name == host} .headOption.map { _.path }// map { _ + s"$content.html"}
-        loader = new FileTemplateLoader(file, ".html")
-        handlebars = (new Handlebars(loader)).`with`(cache)
-        template = handlebars.compile(content)
-      } yield template.apply(context)).getOrElse("ERR")
+        contentRef <- ContentApi.findEntity(host, uri, rules)
+        content <- ContentApi.aggregateEntity(contentRef, List())
+        templateRef <- RenderingApi.findTemplate(contentRef, host, List())
+      } yield RenderingApi.render(content, templateRef)).getOrElse("ERR")
 
        Ok(html).as("text/html")
 

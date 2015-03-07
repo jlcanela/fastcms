@@ -16,7 +16,14 @@ object ContentApi {
   }
   
 
-  def aggregateEntity(ref: EntityRef, rules: List[AggregationRule]) : Option[JsonNode] = ???
+  def aggregateEntity(ref: EntityRef, rules: List[AggregationRule]) : Option[JsonNode] = {
+    import org.codehaus.jackson.map.ObjectMapper
+    import org.codehaus.jackson.JsonNode
+
+    val mapper = new ObjectMapper()
+
+      Some(mapper.readValue("""{"firstname":"john"}""", classOf[JsonNode]))
+  }
 
 
 }
