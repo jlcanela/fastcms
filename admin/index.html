@@ -184,7 +184,7 @@
                         </table>
                     </div>
                 </div>
-            </div><!-- /.container -->
+            </div>
             <div ng-show="currentNode.roleId === 'sources'" ng-controller="SourceController as sourceCtrl">
 
                 <div class="starter-template">
@@ -208,7 +208,7 @@
                         </table>
                     </div>
                 </div>
-            </div><!-- /.container -->  
+            </div>
             <div ng-show="currentNode.roleId === 'aggregation-rule'" ng-controller="AggregationRuleController as aggregationRuleCtrl">
 
             <div class="starter-template">
@@ -234,6 +234,11 @@
                 </div>
             </div>
         </div><!-- /.container -->
+            <div ng-show="currentNode.roleId === 'website'">
+                <div style="height: 60em;">
+                    <object type='text/html' ng-attr-data='{{currentNode.target}}' style='width:100%; height:100%'/>
+                </div>
+            </div>
     </div>
     
 </div>
