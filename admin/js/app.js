@@ -81,22 +81,26 @@
     
       	//test tree model 1
         $scope.websites = [
-            { "roleName" : "Sources", "roleId" : "role1", "children" : [
-              { "roleName" : "article", "roleId" : "article", "children" : [] }
-            ]},
-            { "roleName" : "Websites", "roleId" : "role1", "children" : [
+            { "roleName" : "Websites", "roleId" : "websites", "children" : [
+              { "roleName" : "Add new website", "roleId" : "add-website", "children" : [] },
               { "roleName" : "site1", "roleId" : "role11", "children" : [
-                { "roleName" : "routing rule", "roleId" : "article", "children" : [] },
-                { "roleName" : "aggregation rule", "roleId" : "article", "children" : [] }
+                { "roleName" : "routing rule", "roleId" : "routing-rule", "children" : [] },
+                { "roleName" : "aggregation rule", "roleId" : "aggregation-rule", "children" : [] }
               ]},
               { "roleName" : "site2", "roleId" : "role12", "children" : [
-                { "roleName" : "routing rule", "roleId" : "article", "children" : [] },
-                { "roleName" : "aggregation rule", "roleId" : "article", "children" : [] }
+                { "roleName" : "routing rule", "roleId" : "routing-rule", "children" : [] },
+                { "roleName" : "aggregation rule", "roleId" : "aggregation-rule", "children" : [] }
               ]}
+            ]},
+            { "roleName" : "Sources", "roleId" : "sources", "children" : [
+                          { "roleName" : "article", "roleId" : "article", "children" : [] }
             ]}
           ];
+          
+        $scope.currentNode = $scope.websites[0];
+        $scope.currentNode.selected = 'selected';
     
-
+        //$scope."TREE ID".currentNode = "websites";
         
         $scope.test = "test";
       
