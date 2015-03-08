@@ -83,15 +83,17 @@
         $scope.websites = [
             { "roleName" : "Websites", "roleId" : "websites", "children" : [
               { "roleName" : "Add new website", "roleId" : "add-website", "children" : [] },
-              { "roleName" : "site1", "roleId" : "website", "target":"http://localhost:10001/", "children" : [
+              { "roleName" : "site1", "roleId" : "website", "children" : [
                 { "roleName" : "routing rule", "roleId" : "routing-rule", "children" : [] },
                 { "roleName" : "aggregation rule", "roleId" : "aggregation-rule", "children" : [] },
-                { "roleName" : "logs", "roleId" : "logs", "children" : [] }
+                { "roleName" : "logs", "roleId" : "logs", "children" : [] },
+                { "roleName" : "preview", "roleId" : "preview", "target":"http://localhost:10001/", "children" : [] }
               ]},
-              { "roleName" : "site2", "roleId" : "website", "target":"http://localhost:10002/", "children" : [
+              { "roleName" : "site2", "roleId" : "website", "children" : [
                 { "roleName" : "routing rule", "roleId" : "routing-rule", "children" : [] },
                 { "roleName" : "aggregation rule", "roleId" : "aggregation-rule", "children" : [] },
-                { "roleName" : "logs", "roleId" : "logs", "children" : [] }
+                { "roleName" : "logs", "roleId" : "logs", "children" : [] },
+                { "roleName" : "preview", "roleId" : "preview", "target":"http://localhost:10002/", "children" : [] }
               ]}
             ]},
             { "roleName" : "Sources", "roleId" : "sources", "children" : [
