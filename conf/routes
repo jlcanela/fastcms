@@ -32,5 +32,7 @@ GET       /sources               controllers.SourceController.list
 
 GET       /rules                 controllers.SourceController.rules
 
+GET       /aggregationrules      controllers.SourceController.aggregationRules
+
 
 GET       /articles              controllers.SourceController.articles

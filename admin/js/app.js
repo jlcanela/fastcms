@@ -1,5 +1,5 @@
 (function() {
-    var app = angular.module('website', [ ]);
+    var app = angular.module('website',  ['angularTreeview'] );
     app.config(['$httpProvider', function ($httpProvider) {
         //Reset headers to avoid OPTIONS request (aka preflight)
         $httpProvider.defaults.headers.common = {};
@@ -63,6 +63,45 @@
         });
 
     }]);
+
+    var rc2 = app.controller("AggregationRuleController", ['$http', function($http){ 
+        var ctrl = this;
+
+        ctrl.rules = [];
+
+        $http.get('http://localhost:9000/aggregationrules').success(function(data){
+            console.log(data);
+            ctrl.rules = data;
+        });
+
+    }]);
+    
+     //test controller
+    var mc = app.controller('myController', function($scope){
+    
+      	//test tree model 1
+        $scope.websites = [
+            { "roleName" : "Sources", "roleId" : "role1", "children" : [
+              { "roleName" : "article", "roleId" : "article", "children" : [] }
+            ]},
+            { "roleName" : "Websites", "roleId" : "role1", "children" : [
+              { "roleName" : "site1", "roleId" : "role11", "children" : [
+                { "roleName" : "routing rule", "roleId" : "article", "children" : [] },
+                { "roleName" : "aggregation rule", "roleId" : "article", "children" : [] }
+              ]},
+              { "roleName" : "site2", "roleId" : "role12", "children" : [
+                { "roleName" : "routing rule", "roleId" : "article", "children" : [] },
+                { "roleName" : "aggregation rule", "roleId" : "article", "children" : [] }
+              ]}
+            ]}
+          ];
+    
+
+        
+        $scope.test = "test";
+      
+      });
+      
 
 }());
 

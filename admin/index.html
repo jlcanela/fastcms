@@ -13,15 +13,18 @@
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
+    <link href="css/angular.treeview.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="css/styles.css" rel="stylesheet">
-    
+
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="js/angular.min.js"></script>
+    <script src="js/angtv.js"></script>
     <script src="js/app.js"></script>
 </head>
 
@@ -43,9 +46,10 @@
                 <li ng-class="{ active:tab === 1 }"><a href="#home" ng-click="tab = 1">Home</a></li>
                 <li ng-class="{ active:tab === 2 }"><a href="#" ng-click="tab = 2">Websites</a></li>
                 <li ng-class="{ active:tab === 3 }"><a href="#sources" ng-click="tab = 3">Sources</a></li>
-                <li ng-class="{ active:tab === 4 }"><a href="#rules" ng-click="tab = 4">Rules</a></li>
-                <li ng-class="{ active:tab === 5 }"><a href="#about" ng-click="tab = 5">About</a></li>
-                <li ng-class="{ active:tab === 6 }"><a href="#contact" ng-click="tab = 6">Contact</a></li>
+                <li ng-class="{ active:tab === 4 }"><a href="#rules" ng-click="tab = 4">Routing Rule</a></li>
+                <li ng-class="{ active:tab === 5 }"><a href="#about" ng-click="tab = 5">Aggregation Rule</a></li>
+                <li ng-class="{ active:tab === 6 }"><a href="#about" ng-click="tab = 6">About</a></li>
+                <li ng-class="{ active:tab === 7 }"><a href="#contact" ng-click="tab = 7">Contact</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -54,6 +58,29 @@
 <div>&nbsp;</div>
 <div>&nbsp;</div>
 <div>&nbsp;</div>
+
+<div class="container" ng-show="tab === 1" ng-controller="myController">
+
+    <div style="margin:10px 0 30px 0; padding:10px; background-color:#EEEEEE; border-radius:5px; font:12px Tahoma;">
+        <span><b>Selected Node</b> : {{roleList.name}}</span>
+    </div>
+
+    <!--
+      [TREE attribute]
+      angular-treeview: the treeview directive
+      tree-model : the tree model on $scope.
+      node-id : each node's id
+      node-label : each node's label
+      node-children: each node's children
+    -->
+    <div
+            data-angular-treeview="true"
+            data-tree-model="websites"
+            data-node-id="roleId"
+            data-node-label="roleName"
+            data-node-children="children" >
+    </div>
+</div>
 
 <div class="container" ng-show="tab === 2" ng-controller="WebsiteController as websiteCtrl">
 
@@ -154,8 +181,8 @@
 <div class="container" ng-show="tab === 4" ng-controller="RuleController as ruleCtrl">
 
     <div class="starter-template">
-        <h1>Rule management</h1>
-        <p class="lead">Check your rules in seconds.</p>
+        <h1>Routing Rule management</h1>
+        <p class="lead">Check your routing rules in seconds.</p>
     </div>
 
 
@@ -179,6 +206,32 @@
     </div>
 </div><!-- /.container -->
 
+
+<div class="container" ng-show="tab === 5" ng-controller="AggregationRuleController as aggregationRuleCtrl">
+
+    <div class="starter-template">
+        <h1>Aggregation Rule management</h1>
+        <p class="lead">Check your aggregation rules in seconds.</p>
+    </div>
+
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading"><h3 class="panel-title">Your aggregation rules:</h3></div>
+
+        <div>
+            <!-- Table -->
+            <table class="table">
+                <tr><th>Content</th><th>Source</th><th>Target</th></tr>
+                <tr ng-repeat="rule in aggregationRuleCtrl.rules track by $index">
+                    <td>{{rule.content}}</td>
+                    <td>{{rule.source}}</td>
+                    <td>{{rule.target}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div><!-- /.container -->
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
