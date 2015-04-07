@@ -36,13 +36,20 @@ object RenderingApi {
       .build()
   }
 
-  def findTemplate(ref: EntityRef, host: String, rules: List[TemplatingRule])(websiteDb: WebsiteDb): Option[TemplateRef] =
+  def findTemplate(ref: EntityRef, host: String, rules: List[TemplatingRule])(websiteDb: WebsiteDb): Option[TemplateRef] = try { 
     for {
-      file <- websiteDb.all.filter { _.name == host} .headOption.map { _.path }// map { _ + s"$content.html"}
+      website <- websiteDb.all.filter { _.name == host} .headOption
+      file = website.path // map { _ + s"$content.html"}
       loader = new FileTemplateLoader(file, ".html")
       handlebars = (new Handlebars(loader)).`with`(cache)
       template = handlebars.compile(ref)
     } yield template
+  } catch { 
+    case e: Exception => 
+      println(s"ERR: $host / ref: $ref [${e.getClass}: ${e.getMessage}]")
+      None 
+  }
+
 
 
   def render(content: JsonNode, template: TemplateRef) : String = template.apply(context(content))
