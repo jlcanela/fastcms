@@ -77,35 +77,15 @@
     }]);
     
      //test controller
-    var mc = app.controller('myController', function($scope){
+    var mc = app.controller('myController', ['$http', '$scope', function($http, $scope){
     
-      	//test tree model 1
-        $scope.websites = [
-            { "roleName" : "Websites", "roleId" : "websites", "children" : [
-              { "roleName" : "Add new website", "roleId" : "add-website", "children" : [] },
-              { "roleName" : "site1", "roleId" : "website", "children" : [
-                { "roleName" : "routing rule", "roleId" : "routing-rule", "children" : [] },
-                { "roleName" : "aggregation rule", "roleId" : "aggregation-rule", "children" : [] },
-                { "roleName" : "logs", "roleId" : "logs", "children" : [] },
-                { "roleName" : "preview", "roleId" : "preview", "target":"http://localhost:10001/", "children" : [] }
-              ]},
-              { "roleName" : "site2", "roleId" : "website", "children" : [
-                { "roleName" : "routing rule", "roleId" : "routing-rule", "children" : [] },
-                { "roleName" : "aggregation rule", "roleId" : "aggregation-rule", "children" : [] },
-                { "roleName" : "logs", "roleId" : "logs", "children" : [] },
-                { "roleName" : "preview", "roleId" : "preview", "target":"http://localhost:10002/", "children" : [] }
-              ]}
-            ]},
-            { "roleName" : "Sources", "roleId" : "sources", "children" : [
-                          { "roleName" : "article", "roleId" : "article", "children" : [] }
-            ]}
-          ];
-          
-        $scope.currentNode = $scope.websites[0];
-        $scope.currentNode.selected = 'selected';
-    
-      });
-      
+        $http.get('http://localhost:9000/websites/menu').success(function(data){
+            console.log(data);
+            $scope.websites = data;
+            $scope.currentNode = $scope.websites[0];
+            $scope.currentNode.selected = 'selected';
+        });
+    }]);
 
 }());
 

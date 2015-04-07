@@ -14,6 +14,8 @@
 # GET     /admin/ping            controllers.HealthController.ping
 
 
+GET     /websites/menu           controllers.WebsiteApiController.menu
+
 # GET     /api-docs/website      controllers.ApiHelpController.getResource(path = "/website")
 GET     /websites                controllers.WebsiteApiController.list
 POST    /websites                controllers.WebsiteApiController.create

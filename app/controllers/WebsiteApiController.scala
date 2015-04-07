@@ -43,6 +43,44 @@ object WebsiteApiController extends Controller with ControllerHelper {
       Ok(Json.toJson(websiteDb.all)).withHeaders(("Access-Control-Allow-Origin", "*"));
   }
 
+  def menu() = Action {
+    implicit request =>
+      val json = JsArray(websiteDb.all.map { website =>
+        JsObject(Seq("roleName" -> JsString(website.name), "roleId" -> JsString("website"), "children" ->
+          JsArray(Seq[JsValue](
+        JsObject(Seq("roleName" -> JsString("routing rule"), "roleId" -> JsString("routing-rule"), "children" -> JsArray())),
+        JsObject(Seq("roleName" -> JsString("aggregation rule"), "roleId" -> JsString("aggregation-rule"), "children" -> JsArray())),
+        JsObject(Seq("roleName" -> JsString("logs"), "roleId" -> JsString("logs"), "children" -> JsArray())),
+        JsObject(Seq("roleName" -> JsString("preview"), "roleId" -> JsString("preview"), "target" -> JsString(s"http://localhost:${website.port}/"),"children" -> JsArray()))
+          ))))
+/*        { "roleName" : "aggregation rule", "roleId" : "aggregation-rule", "children" : [] },
+        { "roleName" : "logs", "roleId" : "logs", "children" : [] },
+        { "roleName" : "preview", "roleId" : "preview", "target":"http://localhost:10001/", "children" : [] }
+        ]},*/
+      })
+
+      /*        [
+                { "roleName" : "Websites", "roleId" : "websites", "children" : [
+                { "roleName" : "Add new website", "roleId" : "add-website", "children" : [] },
+                { "roleName" : "site1", "roleId" : "website", "children" : [
+                { "roleName" : "routing rule", "roleId" : "routing-rule", "children" : [] },
+                { "roleName" : "aggregation rule", "roleId" : "aggregation-rule", "children" : [] },
+                { "roleName" : "logs", "roleId" : "logs", "children" : [] },
+                { "roleName" : "preview", "roleId" : "preview", "target":"http://localhost:10001/", "children" : [] }
+                  ]},
+                { "roleName" : "site2", "roleId" : "website", "children" : [
+                { "roleName" : "routing rule", "roleId" : "routing-rule", "children" : [] },
+                { "roleName" : "aggregation rule", "roleId" : "aggregation-rule", "children" : [] },
+                { "roleName" : "logs", "roleId" : "logs", "children" : [] },
+                { "roleName" : "preview", "roleId" : "preview", "target":"http://localhost:10002/", "children" : [] }
+                  ]}
+                  ]},
+                { "roleName" : "Sources", "roleId" : "sources", "children" : [
+                { "roleName" : "article", "roleId" : "article", "children" : [] }
+                  ]}
+                ];*/
+      Ok(json).withHeaders(("Access-Control-Allow-Origin", "*"));
+  }
 
 
   def create() = JsonParserAction(CREATED, WebsiteApi.create(websiteApiConfig, websiteDb))
