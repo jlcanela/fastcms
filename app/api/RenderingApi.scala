@@ -8,6 +8,7 @@ import models.WebsiteDb
 import org.codehaus.jackson.JsonNode
 import play.api.libs.json.JsValue
 import util.JsValueResolver
+import play.api.Logger
 
 object RenderingApi {
 
@@ -46,7 +47,7 @@ object RenderingApi {
     } yield template
   } catch { 
     case e: Exception => 
-      println(s"ERR: $host / ref: $ref [${e.getClass}: ${e.getMessage}]")
+      Logger.error(s"ERR: $host / ref: $ref [${e.getClass}: ${e.getMessage}]")
       None 
   }
 

@@ -40,7 +40,7 @@ object ServeController extends Controller with ControllerHelper {
       
       ContentApi.findEntity(host, uri, routingRules) map { contentRef =>
         
-        Option(Cache.get(s"$host:$contentRef")) map { html => println(s"total time: $uri : ${timer - startTime}");Future.successful(Ok(html.toString).as("text/html"))} getOrElse {
+        Option(Cache.get(s"$host:$contentRef")) map { html => Logger.info(s"total time: $uri : ${timer - startTime}");Future.successful(Ok(html.toString).as("text/html"))} getOrElse {
          
           def refs = for {
             templateRef <-  RenderingApi.findTemplate(contentRef, host, List())(websiteDb)
@@ -51,7 +51,7 @@ object ServeController extends Controller with ControllerHelper {
               content <- ContentApi.aggregateEntityHttp(contentRef, sources, aggregationRules)
               html = RenderingApi.render(content, templateRef)
               _ = Cache.set(s"$host:$contentRef", html)
-              _ = println(s"total time: $uri : ${timer - startTime}")
+              _ = Logger.info(s"total time: $uri : ${timer - startTime}")
             } yield Ok(html).as("text/html")
           } getOrElse { Future.successful(error("content not found")) }
           
