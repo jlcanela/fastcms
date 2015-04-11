@@ -7,32 +7,12 @@ import play.api.Play
 import play.api.libs.json._
 import play.api.mvc._
 
+import scalaz._
+import Scalaz._
+
 
 object WebsiteApiController extends Controller with ControllerHelper {
 
-
-  /*
-  import java.io.{FileReader, OutputStreamWriter, ByteArrayOutputStream, StringReader}
-
-  import com.github.mustachejava.DefaultMustacheFactory
-
-  val mf = new DefaultMustacheFactory();
-  val mustache = mf.compile(new FileReader(new java.io.File("node/views/home.handlebars")), "example");
-  def html() = Action {
-    implicit request =>
-        val scopes = new util.HashMap[String, Object]();
-        scopes.put("name", "Mustache")
-        val out = new ByteArrayOutputStream(1024 * 64)
-        //scopes.put("feature", new Feature("Perfect!"));
-        val  writer = new OutputStreamWriter(out);
-        mustache.execute(writer, scopes);
-        writer.flush();
-
-      Ok(out.toByteArray).as("text/html")
-  }*/
-
-  //val config = new play.Configuration(app.configuration)
-  
   val websiteApiConfig : WebsiteApiConfig = WebsiteApiConfig(new play.Configuration(Play.current.configuration))
 
   val websiteDb = new WebsiteDb(websiteApiConfig.configDb, websiteApiConfig.adminPort, websiteApiConfig.wwwPath)
@@ -43,43 +23,29 @@ object WebsiteApiController extends Controller with ControllerHelper {
       Ok(Json.toJson(websiteDb.all)).withHeaders(("Access-Control-Allow-Origin", "*"));
   }
 
+  case class Entry(name: String, id: String, target: Option[String]) {
+    def toJson = JsObject(Seq("roleName" -> JsString(name), "roleId" -> JsString(id)) ++ target.map(t => ("target" -> JsString(t))).toSeq)
+  }
+
+  def generateMenu(f: Website => Tree[Entry]) = {
+    
+    val addWebsite = Entry("Add website", "add-website", None)
+    def allMenu = websiteDb.all.filter(_.name != "admin").map(f)
+    def treeToJson(t: Tree[Entry]): JsObject = t.rootLabel.toJson + ("children" -> JsArray(t.subForest.toSeq.map(treeToJson _)))
+    
+    JsArray((addWebsite.toJson :: allMenu.map(treeToJson _)).toSeq)
+  }
+
   def menu() = Action {
     implicit request =>
-      val json = JsArray(JsObject(Seq("roleName" -> JsString("Add website"), "roleId" -> JsString("add-website"), "children" -> JsArray())) ::websiteDb.all.map { website =>
-        JsObject(Seq("roleName" -> JsString(website.name), "roleId" -> JsString("website"), "children" ->
-          JsArray(Seq[JsValue](
-        JsObject(Seq("roleName" -> JsString("routing rule"), "roleId" -> JsString("routing-rule"), "children" -> JsArray())),
-        JsObject(Seq("roleName" -> JsString("aggregation rule"), "roleId" -> JsString("aggregation-rule"), "children" -> JsArray())),
-        JsObject(Seq("roleName" -> JsString("logs"), "roleId" -> JsString("logs"), "children" -> JsArray())),
-        JsObject(Seq("roleName" -> JsString("preview"), "roleId" -> JsString("preview"), "target" -> JsString(s"http://localhost:${website.port}/"),"children" -> JsArray()))
-          ))))
-/*        { "roleName" : "aggregation rule", "roleId" : "aggregation-rule", "children" : [] },
-        { "roleName" : "logs", "roleId" : "logs", "children" : [] },
-        { "roleName" : "preview", "roleId" : "preview", "target":"http://localhost:10001/", "children" : [] }
-        ]},*/
-      })
-
-      /*        [
-                { "roleName" : "Websites", "roleId" : "websites", "children" : [
-                { "roleName" : "Add new website", "roleId" : "add-website", "children" : [] },
-                { "roleName" : "site1", "roleId" : "website", "children" : [
-                { "roleName" : "routing rule", "roleId" : "routing-rule", "children" : [] },
-                { "roleName" : "aggregation rule", "roleId" : "aggregation-rule", "children" : [] },
-                { "roleName" : "logs", "roleId" : "logs", "children" : [] },
-                { "roleName" : "preview", "roleId" : "preview", "target":"http://localhost:10001/", "children" : [] }
-                  ]},
-                { "roleName" : "site2", "roleId" : "website", "children" : [
-                { "roleName" : "routing rule", "roleId" : "routing-rule", "children" : [] },
-                { "roleName" : "aggregation rule", "roleId" : "aggregation-rule", "children" : [] },
-                { "roleName" : "logs", "roleId" : "logs", "children" : [] },
-                { "roleName" : "preview", "roleId" : "preview", "target":"http://localhost:10002/", "children" : [] }
-                  ]}
-                  ]},
-                { "roleName" : "Sources", "roleId" : "sources", "children" : [
-                { "roleName" : "article", "roleId" : "article", "children" : [] }
-                  ]}
-                ];*/
-      Ok(json).withHeaders(("Access-Control-Allow-Origin", "*"));
+      Ok(generateMenu(ws =>
+        Entry(ws.name, "website", None).node(
+          Entry("Routing rule", "routing-rule", None).leaf,
+          Entry("Aggregation rule", "aggregation-rule", None).leaf,
+          Entry("Preview", "preview", s"http://localhost:${ws.port}/".some).leaf,
+          Entry("Logs", "logs", None).leaf,
+          Entry("Remove", "remove", None).leaf)
+      )).withHeaders(("Access-Control-Allow-Origin", "*"));
   }
 
 
