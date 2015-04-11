@@ -59,219 +59,50 @@
 
     <div class="row">
         <div class="col-md-3">
-        <div style="margin:10px 0 30px 0; padding:10px; background-color:#EEEEEE; border-radius:5px; font:12px Tahoma;">
-            <span><b>Selected Node</b> : {{currentNode.roleName}}</span>
-        </div>
+            <div style="margin:10px 0 30px 0; padding:10px; background-color:#EEEEEE; border-radius:5px; font:12px Tahoma;">
+                <span><b>Selected Node</b> : {{currentNode.roleName}}</span>
+            </div>
 
-        <!--
-         data-angular-treeview="true"
-          data-tree-id="mytree"
-          data-tree-model="roleList"
-          data-node-id="roleId"
-          data-node-label="roleName"
-          data-node-children="children" >
+            <!--
+             data-angular-treeview="true"
+              data-tree-id="mytree"
+              data-tree-model="roleList"
+              data-node-id="roleId"
+              data-node-label="roleName"
+              data-node-children="children" >
 
-          [TREE attribute]
-          angular-treeview: the treeview directive
-          tree-model : the tree model on $scope.
-          node-id : each node's id
-          node-label : each node's label
-          node-children: each node's children
-        -->
-        <div
-                data-angular-treeview="true"
-                data-tree-id="menutree"
-                data-tree-model="websites"
-                data-node-id="roleId"
-                data-node-label="roleName"
-                data-node-children="children" >
+              [TREE attribute]
+              angular-treeview: the treeview directive
+              tree-model : the tree model on $scope.
+              node-id : each node's id
+              node-label : each node's label
+              node-children: each node's children
+            -->
+            <div
+                    data-angular-treeview="true"
+                    data-tree-id="menutree"
+                    data-tree-model="websites"
+                    data-node-id="roleId"
+                    data-node-label="roleName"
+                    data-node-children="children" >
+            </div>
         </div>
-    </div>
         <div class="col-md-9">
-            <div ng-show="currentNode.roleId === 'websites'" ng-controller="WebsiteController as websiteCtrl">
-                <div class="starter-template">
-                    <h1>Website management</h1>
-                    <p class="lead">Deploy your websites in seconds.</p>
-                </div>
-                <div class="panel panel-default">
-                    <!-- Default panel contents -->
-                    <div class="panel-heading"><h3 class="panel-title">Your websites:</h3></div>
 
-                    <div>
-
-                        <!-- Table -->
-                        <table class="table">
-                            <tr><th>Name</th><th>Url</th><th>Download Url</th><th>Port</th><th>Path</th></tr>
-                            <tr ng-repeat="website in websiteCtrl.websites track by $index">
-                                <td><a href="#" ng-click="wsname = website.name">{{website.name}}</a></td>
-                                <td><a href="http://localhost:{{website.port}}" target="_blank">http://localhost:{{website.port}}</a></td>
-                                <td><a href="{{website.url}}">{{website.url}}</a></td><td>{{website.port}}</td>
-                                <td>{{website.path}}</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div ng-show="currentNode.roleId === 'add-website'" ng-controller="WebsiteController as websiteCtrl">
-                <div class="starter-template">
-                    <h1>Website management</h1>
-                    <p class="lead">Deploy your websites in seconds.</p>
-                    <p>You can get them from <a href="http://www.opendesigns.org/" target="_blank">http://www.opendesigns.org/</a>.</p>
-                    <p>for example: <ul>
-                    <li><a href="http://www.opendesigns.org/design/html5-streets/" target="_blank">http://www.opendesigns.org/design/html5-streets/download/</a></li>
-                    <li><a href="http://www.opendesigns.org/design/blue-skies/" target="_blank">http://www.opendesigns.org/design/blue-skies/download/</a></li>
-                    <li><a href="http://www.opendesigns.org/design/photoartwork2//" target="_blank">http://www.opendesigns.org/design/photoartwork2/download/</a></li>
-
-                </ul></p>
-                </div>
-
-                <div class="panel panel-default">
-                    <!-- Default panel contents -->
-
-
-                    <div class="panel-heading"><h3 class="panel-title">Create a new website:</h3></div>
-                    <div>&nbsp;</div>
-                    <form role="form" class="form-horizontal" ng-submit="websiteCtrl.addWebsite()" >
-                        <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Name</label>
-                            <div class="col-sm-7">
-                                <input type="text" class="form-control" id="name" ng-model="websiteCtrl.website.name"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="url" class="col-sm-2 control-label">Url</label>
-                            <div class="col-sm-7">
-                                <input type="url" class="form-control" id="url" ng-model="websiteCtrl.website.url"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="port" class="col-sm-2 control-label">Port</label>
-                            <div class="col-sm-7">
-                                <input type="number" class="form-control" id="port" ng-model="websiteCtrl.website.port"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-7">
-                                <button type="submit" class="btn btn-default btn-primary">Add</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div ng-show="currentNode.roleId === 'routing-rule'" ng-controller="RuleController as ruleCtrl">
-
-                <div class="starter-template">
-                    <h1>Routing Rule management</h1>
-                    <p class="lead">Check your routing rules in seconds.</p>
-                </div>
-
-
-                <div class="panel panel-default">
-                    <!-- Default panel contents -->
-                    <div class="panel-heading"><h3 class="panel-title">Your rules:</h3></div>
-
-                    <div>
-                        <!-- Table -->
-                        <table class="table">
-                            <tr><th>Id</th><th>Host</th><th>Uri</th><th>Content</th><th>Priority</th></tr>
-                            <tr ng-repeat="rule in ruleCtrl.rules track by $index">
-                                <td>{{rule.id}}</td>
-                                <td>{{rule.host}}</td>
-                                <td>{{rule.uri}}</td>
-                                <td>{{rule.content}}</td>
-                                <td>{{rule.priority}}</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div ng-show="currentNode.roleId === 'sources'" ng-controller="SourceController as sourceCtrl">
-
-                <div class="starter-template">
-                    <h1>Source management</h1>
-                    <p class="lead">Check your sources in seconds.</p>
-                </div>
-
-
-                <div class="panel panel-default">
-                    <!-- Default panel contents -->
-                    <div class="panel-heading"><h3 class="panel-title">Your sources:</h3></div>
-
-                    <div>
-                        <!-- Table -->
-                        <table class="table">
-                            <tr><th>Name</th><th>Url</th></tr>
-                            <tr ng-repeat="source in sourceCtrl.sources track by $index">
-                                <td>{{source.name}}</td>
-                                <td><a href="{{source.url}}" target="_blank">{{source.url}}</a></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div ng-show="currentNode.roleId === 'aggregation-rule'" ng-controller="AggregationRuleController as aggregationRuleCtrl">
-
-            <div class="starter-template">
-                <h1>Aggregation Rule management</h1>
-                <p class="lead">Check your aggregation rules in seconds.</p>
-            </div>
-
-
-            <div class="panel panel-default">
-                <!-- Default panel contents -->
-                <div class="panel-heading"><h3 class="panel-title">Your aggregation rules:</h3></div>
-
-                <div>
-                    <!-- Table -->
-                    <table class="table">
-                        <tr><th>Content</th><th>Source</th><th>Target</th></tr>
-                        <tr ng-repeat="rule in aggregationRuleCtrl.rules track by $index">
-                            <td>{{rule.content}}</td>
-                            <td>{{rule.source}}</td>
-                            <td>{{rule.target}}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div><!-- /.container -->
-            <div ng-show="currentNode.roleId === 'website'">
-                website
-            </div>
-            <div ng-show="currentNode.roleId === 'preview'">
-                <div style="height: 60em;">
-                    <object type='text/html' ng-attr-data='{{currentNode.target}}' style='width:100%; height:100%'/>
-                </div>
-            </div>
+            <div ng-include='"templates/add-website.html"'></div>
+            <div ng-include='"templates/websites.html"'></div>
+            <div ng-include='"templates/sources.html"'></div>
+            <div ng-include='"templates/website.html"'></div>
+            <div ng-include='"templates/routing-rule.html"'></div>
+            <div ng-include='"templates/aggregation-rule.html"'></div>
+            <div ng-include='"templates/preview.html"'></div>
+            <div ng-include='"templates/logs.html"'></div>
+            <div ng-include='"templates/remove.html"'></div>
+            
+        </div>
     </div>
     
 </div>
-
-
-<div class="container" ng-show="tab === 5" ng-controller="AggregationRuleController as aggregationRuleCtrl">
-
-    <div class="starter-template">
-        <h1>Aggregation Rule management</h1>
-        <p class="lead">Check your aggregation rules in seconds.</p>
-    </div>
-
-
-    <div class="panel panel-default">
-        <!-- Default panel contents -->
-        <div class="panel-heading"><h3 class="panel-title">Your aggregation rules:</h3></div>
-
-        <div>
-            <!-- Table -->
-            <table class="table">
-                <tr><th>Content</th><th>Source</th><th>Target</th></tr>
-                <tr ng-repeat="rule in aggregationRuleCtrl.rules track by $index">
-                    <td>{{rule.content}}</td>
-                    <td>{{rule.source}}</td>
-                    <td>{{rule.target}}</td>
-                </tr>
-            </table>
-        </div>
-    </div>
-</div><!-- /.container -->
 
 <!-- Bootstrap core JavaScript
 ================================================== -->

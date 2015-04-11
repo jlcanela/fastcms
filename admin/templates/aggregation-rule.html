@@ -1,0 +1,25 @@
+<div ng-show="currentNode.roleId === 'aggregation-rule'" ng-controller="AggregationRuleController as aggregationRuleCtrl">
+
+    <div class="starter-template">
+        <h1>Aggregation Rule management</h1>
+        <p class="lead">Check your aggregation rules in seconds.</p>
+    </div>
+
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading"><h3 class="panel-title">Your aggregation rules:</h3></div>
+
+        <div>
+            <!-- Table -->
+            <table class="table">
+                <tr><th>Content</th><th>Source</th><th>Target</th></tr>
+                <tr ng-repeat="rule in aggregationRuleCtrl.rules track by $index">
+                    <td>{{rule.content}}</td>
+                    <td>{{rule.source}}</td>
+                    <td>{{rule.target}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

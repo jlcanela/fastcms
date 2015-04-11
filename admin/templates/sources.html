@@ -1,0 +1,24 @@
+<div ng-show="currentNode.roleId === 'sources'" ng-controller="SourceController as sourceCtrl">
+
+    <div class="starter-template">
+        <h1>Source management</h1>
+        <p class="lead">Check your sources in seconds.</p>
+    </div>
+
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading"><h3 class="panel-title">Your sources:</h3></div>
+
+        <div>
+            <!-- Table -->
+            <table class="table">
+                <tr><th>Name</th><th>Url</th></tr>
+                <tr ng-repeat="source in sourceCtrl.sources track by $index">
+                    <td>{{source.name}}</td>
+                    <td><a href="{{source.url}}" target="_blank">{{source.url}}</a></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

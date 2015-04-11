@@ -1,0 +1,28 @@
+<div ng-show="currentNode.roleId === 'routing-rule'" ng-controller="RuleController as ruleCtrl">
+
+    <div class="starter-template">
+        <h1>Routing Rule management</h1>
+        <p class="lead">Check your routing rules in seconds.</p>
+    </div>
+
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading"><h3 class="panel-title">Your rules:</h3></div>
+
+        <div>
+            <!-- Table -->
+            <table class="table">
+                <tr><th>Id</th><th>Host</th><th>Uri</th><th>Content</th><th>Priority</th></tr>
+                <tr ng-repeat="rule in ruleCtrl.rules track by $index">
+                    <td>{{rule.id}}</td>
+                    <td>{{rule.host}}</td>
+                    <td>{{rule.uri}}</td>
+                    <td>{{rule.content}}</td>
+                    <td>{{rule.priority}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</div>
