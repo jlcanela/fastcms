@@ -45,7 +45,7 @@ object WebsiteApiController extends Controller with ControllerHelper {
 
   def menu() = Action {
     implicit request =>
-      val json = JsArray(websiteDb.all.map { website =>
+      val json = JsArray(JsObject(Seq("roleName" -> JsString("Add website"), "roleId" -> JsString("add-website"), "children" -> JsArray())) ::websiteDb.all.map { website =>
         JsObject(Seq("roleName" -> JsString(website.name), "roleId" -> JsString("website"), "children" ->
           JsArray(Seq[JsValue](
         JsObject(Seq("roleName" -> JsString("routing rule"), "roleId" -> JsString("routing-rule"), "children" -> JsArray())),
