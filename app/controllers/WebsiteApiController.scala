@@ -30,10 +30,12 @@ object WebsiteApiController extends Controller with ControllerHelper {
   def generateMenu(f: Website => Tree[Entry]) = {
     
     val addWebsite = Entry("Add website", "add-website", None)
+    val websites = Entry("Websites", "websites", None)
+    val sources = Entry("Sources", "sources", None)
     def allMenu = websiteDb.all.filter(_.name != "admin").map(f)
     def treeToJson(t: Tree[Entry]): JsObject = t.rootLabel.toJson + ("children" -> JsArray(t.subForest.toSeq.map(treeToJson _)))
     
-    JsArray((addWebsite.toJson :: allMenu.map(treeToJson _)).toSeq)
+    JsArray((addWebsite.toJson :: websites.toJson :: sources.toJson :: allMenu.map(treeToJson _)).toSeq)
   }
 
   def menu() = Action {
@@ -43,8 +45,7 @@ object WebsiteApiController extends Controller with ControllerHelper {
           Entry("Routing rule", "routing-rule", None).leaf,
           Entry("Aggregation rule", "aggregation-rule", None).leaf,
           Entry("Preview", "preview", s"http://localhost:${ws.port}/".some).leaf,
-          Entry("Logs", "logs", None).leaf,
-          Entry("Remove", "remove", None).leaf)
+          Entry("Logs", "logs", None).leaf)
       )).withHeaders(("Access-Control-Allow-Origin", "*"));
   }
 
